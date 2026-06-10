@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 Fiesta de Cumpleaños de Sofía</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- tsParticles -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --lila:    #b87ce8;
+      --rosa:    #f97bbd;
+      --menta:   #5edbc4;
+      --amarillo:#ffe156;
+      --blanco:  #fffdf7;
+      --texto:   #3a2055;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #1a0a2e;
+      color: var(--texto);
+      overflow-x: hidden;
+    }
+
+    /* ── PARTÍCULAS ── */
+    #tsparticles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── WRAPPER ── */
+    .card-invite {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 2rem auto;
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: 0 0 60px #b87ce855, 0 0 0 4px var(--lila);
+      background: var(--blanco);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 60%, #f97bbd 100%);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle at 70% 30%, #ffe15655 0%, transparent 60%),
+                  radial-gradient(circle at 20% 80%, #5edbc455 0%, transparent 50%);
+    }
+    .hero-emoji {
+      font-size: 4.5rem;
+      line-height: 1;
+      display: block;
+      animation: bounce 1.4s infinite alternate;
+      position: relative;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0) rotate(-4deg); }
+      to   { transform: translateY(-14px) rotate(4deg); }
+    }
+    .hero h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      color: #fff;
+      text-shadow: 3px 3px 0 #7c3aed, 0 0 30px #ffe156aa;
+      position: relative;
+      margin: .5rem 0 .2rem;
+    }
+    .hero .subtitle {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1.1rem, 4vw, 1.6rem);
+      color: var(--amarillo);
+      position: relative;
+    }
+    .age-badge {
+      display: inline-block;
+      background: var(--amarillo);
+      color: var(--texto);
+      font-family: 'Fredoka One', cursive;
+      font-size: 5rem;
+      line-height: 1;
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 20px #00000044;
+      display: flex; align-items: center; justify-content: center;
+      margin: 1rem auto;
+      animation: spin-slow 8s linear infinite;
+      position: relative;
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(-6deg); }
+      50%  { transform: rotate(6deg);  }
+      to   { transform: rotate(-6deg); }
+    }
+
+    /* ── SECTION BLOCKS ── */
+    .section {
+      padding: 2.2rem 2rem;
+      border-bottom: 2px dashed #e9d5ff;
+    }
+    .section:last-child { border-bottom: none; }
+    .section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.45rem;
+      color: #7c3aed;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+    }
+    .info-card {
+      background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    .info-card .ic-icon { font-size: 1.8rem; }
+    .info-card .ic-label {
+      font-size: .75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: #9333ea; margin: .2rem 0 .1rem;
+    }
+    .info-card .ic-value { font-weight: 700; font-size: .95rem; color: var(--texto); }
+
+    /* ── CARRUSEL ── */
+    .carousel-inner img {
+      height: 320px;
+      object-fit: cover;
+      border-radius: 0;
+      width: 100%;
+    }
+    .carousel-caption-custom {
+      background: linear-gradient(to top, #0009, transparent);
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: .8rem 1rem;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* ── MAPA ── */
+    .map-wrapper {
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 3px solid #e9d5ff;
+    }
+
+    /* ── BOTONES ── */
+    .btn-fiesta {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.15rem;
+      border-radius: 50px;
+      padding: .65rem 1.8rem;
+      border: none;
+      display: inline-flex; align-items: center; gap: .5rem;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+    }
+    .btn-fiesta:hover { transform: translateY(-3px); box-shadow: 0 8px 24px #0004; }
+    .btn-wa   { background: #25d366; color: #fff; }
+    .btn-cal  { background: #4285f4; color: #fff; }
+    .btn-share{ background: linear-gradient(135deg,#f97bbd,#b87ce8); color: #fff; }
+
+    /* ── CONFIRMACIÓN ── */
+    .confirm-box {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .counter-input {
+      display: flex; align-items: center; justify-content: center; gap: .8rem;
+      margin: 1rem 0;
+    }
+    .counter-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2px solid #059669;
+      background: #fff;
+      font-size: 1.4rem; font-weight: 700; color: #059669;
+      cursor: pointer; transition: background .15s;
+      line-height: 1;
+    }
+    .counter-btn:hover { background: #059669; color: #fff; }
+    #guests-count {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem; color: #059669; min-width: 2.5rem; text-align: center;
+    }
+    #confirm-msg {
+      font-size: .9rem; color: #065f46; margin-top: .5rem; min-height: 1.2em;
+    }
+
+    /* ── CALENDARIO ── */
+    .cal-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    /* ── TARJETA COMPARTIR ── */
+    .share-card {
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+      border-radius: 1.5rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: #fff;
+    }
+    .share-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.4rem; margin-bottom: .5rem; }
+    .share-card p { font-size: .92rem; opacity: .9; margin-bottom: 1.2rem; }
+    .share-btns { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #1a0a2e;
+      color: #c4b5fd;
+      text-align: center;
+      padding: 1.2rem;
+      font-size: .88rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:480px){
+      .card-invite { margin: .5rem; border-radius: 1.2rem; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+      .carousel-inner img { height: 230px; }
+    }
+
+    /* ── TOAST ── */
+    #toast-container {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 9999; width: max-content; max-width: 90vw;
+    }
+    .toast-msg {
+      background: #059669; color: #fff;
+      border-radius: 50px; padding: .6rem 1.4rem;
+      font-weight: 700; font-size: .95rem;
+      box-shadow: 0 4px 20px #0004;
+      animation: fadeup .4s ease, fadedown .4s ease 2.6s forwards;
+    }
+    @keyframes fadeup   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadedown { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(16px)} }
+  </style>
+</head>
+<body>
+
+<!-- Partículas de fondo -->
+<div id="tsparticles"></div>
+
+<div id="toast-container"></div>
+
+<div class="card-invite">
+
+  <!-- ══════════ HERO ══════════ -->
+  <div class="hero">
+    <span class="hero-emoji">🦄✨</span>
+    <h1>¡Estás invitado!</h1>
+    <p class="subtitle">al cumpleaños de</p>
+    <div class="age-badge">5</div>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:2.4rem;color:#fff;position:relative;">
+      Sofía Martínez
+    </h2>
+    <p style="color:#fce7f3;margin-top:.4rem;font-size:1.05rem;position:relative;">
+      🎀 ¡Habrá globos, pasteles y mucha diversión! 🎈
+    </p>
+  </div>
+
+  <!-- ══════════ DETALLES ══════════ -->
+  <div class="section">
+    <div class="section-title"><span>📋</span> Detalles del evento</div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic-icon">📅</div>
+        <div class="ic-label">Fecha</div>
+        <div class="ic-value">Sábado 5 de julio<br>2025</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">⏰</div>
+        <div class="ic-label">Hora</div>
+        <div class="ic-value">4:00 PM – 8:00 PM</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📍</div>
+        <div class="ic-label">Lugar</div>
+        <div class="ic-value">Salón Arcoiris<br>Monterrey, NL</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🎠</div>
+        <div class="ic-label">Temática</div>
+        <div class="ic-value">Unicornios &amp;<br>Princesas Mágicas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ CARRUSEL ══════════ -->
+  <div class="section" style="padding-left:0;padding-right:0;padding-bottom:0;">
+    <div class="section-title" style="padding:0 2rem 1rem;">
+      <span>📸</span> Fotos de Sofía
+    </div>
+    <div id="carouselFotos" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselFotos" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#carouselFotos" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#carouselFotos" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#carouselFotos" data-bs-slide-to="3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=680&q=80" alt="Foto 1"/>
+          <div class="carousel-caption-custom">🎂 ¡Lista para celebrar!</div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=680&q=80" alt="Foto 2"/>
+          <div class="carousel-caption-custom">🦄 Mi temática favorita</div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=680&q=80" alt="Foto 3"/>
+          <div class="carousel-caption-custom">🎈 ¡Ya quiero que llegue!</div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1602631985686-1bb0e6a8696e?w=680&q=80" alt="Foto 4"/>
+          <div class="carousel-caption-custom">✨ Momentos mágicos</div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselFotos" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselFotos" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ MAPA ══════════ -->
+  <div class="section">
+    <div class="section-title"><span>🗺️</span> ¿Cómo llegar?</div>
+    <p style="font-size:.95rem;margin-bottom:.8rem;color:#6b21a8;font-weight:600;">
+      📍 Salón Arcoiris — Av. Constitución 1200, Monterrey, Nuevo León
+    </p>
+    <div class="map-wrapper mb-3">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3596.7814754012567!2d-100.31202518498!3d25.67012198365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8662954fbeef17d7%3A0x676f9a1eb00ce53a!2sAv.%20Constituci%C3%B3n%2C%20Monterrey%2C%20N.L.!5e0!3m2!1ses!2smx!4v1680000000000"
+        width="100%" height="240" style="border:0;display:block;" allowfullscreen loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+    <a class="btn-fiesta btn-wa w-100 justify-content-center"
+       href="https://www.google.com/maps/dir/?api=1&destination=Av.+Constituci%C3%B3n+1200,+Monterrey,+NL"
+       target="_blank" rel="noopener">
+      <i class="bi bi-geo-alt-fill"></i> Abrir en Google Maps
+    </a>
+  </div>
+
+  <!-- ══════════ CONFIRMACIÓN ══════════ -->
+  <div class="section">
+    <div class="section-title"><span>✅</span> Confirmar asistencia</div>
+    <div class="confirm-box">
+      <p style="font-weight:700;color:#065f46;font-size:.95rem;">
+        ¿Cuántas personas asistirán contigo?
+      </p>
+      <div class="counter-input">
+        <button class="counter-btn" onclick="changeGuests(-1)">−</button>
+        <span id="guests-count">1</span>
+        <button class="counter-btn" onclick="changeGuests(1)">+</button>
+      </div>
+      <p id="confirm-msg"></p>
+      <a id="btn-confirm" href="#" class="btn-fiesta btn-wa mt-2" onclick="confirmAttendance(event)">
+        <i class="bi bi-whatsapp"></i> Confirmar por WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- ══════════ GOOGLE CALENDAR ══════════ -->
+  <div class="section">
+    <div class="section-title"><span>📆</span> Agregar al calendario</div>
+    <div class="cal-box">
+      <p style="font-weight:700;color:#1d4ed8;margin-bottom:1rem;">
+        ¡No olvides apartar la fecha! Agrega el evento con un clic.
+      </p>
+      <a class="btn-fiesta btn-cal" id="btn-calendar" href="#" target="_blank" rel="noopener">
+        <i class="bi bi-calendar-plus-fill"></i> Agregar a Google Calendar
+      </a>
+    </div>
+  </div>
+
+  <!-- ══════════ TARJETA COMPARTIR ══════════ -->
+  <div class="section">
+    <div class="section-title"><span>📲</span> Compartir invitación</div>
+    <div class="share-card">
+      <h3>¡Comparte con amigos y familia!</h3>
+      <p>Envía esta invitación digital directamente por WhatsApp o Instagram.</p>
+      <div class="share-btns">
+        <a class="btn-fiesta btn-wa" id="btn-share-wa" href="#" target="_blank" rel="noopener">
+          <i class="bi bi-whatsapp"></i> WhatsApp
+        </a>
+        <button class="btn-fiesta btn-share" onclick="shareInstagram()">
+          <i class="bi bi-instagram"></i> Copiar para Instagram
+        </button>
+        <button class="btn-fiesta" style="background:#fff;color:#7c3aed;" onclick="copyLink()">
+          <i class="bi bi-link-45deg"></i> Copiar enlace
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <div class="footer">
+    🎉 Con todo el amor para nuestra princesa Sofía 🎉<br>
+    <span style="opacity:.6;font-size:.8rem;">Familia Martínez Herrera · Monterrey, NL</span>
+  </div>
+
+</div><!-- /card-invite -->
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ══════════ CONFIG ══════════ */
+const CONFIG = {
+  // ── WhatsApp ──
+  WA_NUMBER:   "5218112345678",          // Número con código país (sin + ni espacios)
+  EVENT_NAME:  "Cumpleaños de Sofía 🦄",
+  EVENT_DATE:  "Sábado 5 de julio 2025 a las 4:00 PM",
+  EVENT_PLACE: "Salón Arcoiris, Av. Constitución 1200, Monterrey, NL",
+
+  // ── Google Calendar ──
+  CAL_START:   "20250705T160000",        // YYYYMMDDTHHMMSS (hora local)
+  CAL_END:     "20250705T200000",
+  CAL_TITLE:   "🦄 Cumpleaños de Sofía Martínez",
+  CAL_LOCATION:"Salón Arcoiris, Av. Constitución 1200, Monterrey, NL",
+  CAL_DETAILS: "¡Vente a celebrar los 5 años de Sofía! Temática: Unicornios y Princesas.",
+
+  // ── Google Sheets (Web App URL) ──
+  // Instrucciones: ve a Extensions > Apps Script en tu hoja de cálculo,
+  // pega el código del comentario al final de este archivo, despliega como Web App
+  // y pega la URL aquí:
+  SHEETS_URL: "https://script.google.com/macros/s/TU_URL_DE_APPS_SCRIPT_AQUI/exec",
+
+  // ── Enlace de la invitación (para compartir) ──
+  INVITE_URL: window.location.href,
+};
+
+/* ══════════ PARTÍCULAS ══════════ */
+tsParticles.load("tsparticles", {
+  fullScreen: false,
+  background: { color: "transparent" },
+  particles: {
+    number: { value: 55, density: { enable: true, area: 800 } },
+    color: { value: ["#f97bbd","#b87ce8","#5edbc4","#ffe156","#fff"] },
+    shape: { type: ["circle","star"] },
+    opacity: { value: { min: .3, max: .9 }, animation: { enable: true, speed: .8 } },
+    size: { value: { min: 3, max: 9 } },
+    move: {
+      enable: true, speed: 1.2, direction: "top",
+      outModes: "out", random: true, straight: false,
+    },
+    rotate: { value: { min:0, max:360 }, animation:{ enable:true, speed:5 } },
+  },
+  interactivity: {
+    events: { onHover: { enable: true, mode: "repulse" } },
+    modes:  { repulse: { distance: 80, duration: .4 } },
+  },
+});
+
+/* ══════════ CONTADOR DE INVITADOS ══════════ */
+let guests = 1;
+function changeGuests(delta) {
+  guests = Math.max(1, Math.min(20, guests + delta));
+  document.getElementById("guests-count").textContent = guests;
+  const msg = document.getElementById("confirm-msg");
+  if (guests === 1) msg.textContent = "Solo tú 😊";
+  else if (guests <= 3) msg.textContent = `¡Genial! Vendrán ${guests} personas 🎉`;
+  else msg.textContent = `¡Wow! ${guests} personas ¡qué emoción! 🎊`;
+}
+
+/* ══════════ CONFIRMAR POR WHATSAPP ══════════ */
+async function confirmAttendance(e) {
+  e.preventDefault();
+  const name    = "Invitado";           // podrías pedir el nombre con un prompt/modal
+  const message = `¡Hola! Confirmo mi asistencia al *${CONFIG.EVENT_NAME}*.\n` +
+                  `📅 ${CONFIG.EVENT_DATE}\n📍 ${CONFIG.EVENT_PLACE}\n` +
+                  `👥 Número de personas: *${guests}*`;
+
+  // 1️⃣  Guardar en Google Sheets
+  try {
+    if (!CONFIG.SHEETS_URL.includes("TU_URL")) {
+      const payload = {
+        name,
+        guests,
+        timestamp: new Date().toLocaleString("es-MX"),
+        event: CONFIG.EVENT_NAME,
+      };
+      await fetch(CONFIG.SHEETS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    }
+  } catch (err) {
+    console.warn("Sheets:", err);
+  }
+
+  // 2️⃣  Abrir WhatsApp
+  const wa = `https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(message)}`;
+  window.open(wa, "_blank");
+
+  showToast("✅ ¡Redirigiendo a WhatsApp!");
+}
+
+/* ══════════ GOOGLE CALENDAR ══════════ */
+(function buildCalLink() {
+  const base   = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+  const params = new URLSearchParams({
+    text:     CONFIG.CAL_TITLE,
+    dates:    `${CONFIG.CAL_START}/${CONFIG.CAL_END}`,
+    details:  CONFIG.CAL_DETAILS,
+    location: CONFIG.CAL_LOCATION,
+  });
+  document.getElementById("btn-calendar").href = `${base}&${params}`;
+})();
+
+/* ══════════ COMPARTIR ══════════ */
+(function buildShareLinks() {
+  const text = `🦄✨ ¡Estás invitado al cumpleaños de Sofía!\n` +
+               `📅 ${CONFIG.EVENT_DATE}\n📍 ${CONFIG.EVENT_PLACE}\n` +
+               `👇 Ver invitación completa:`;
+  const wa = `https://wa.me/?text=${encodeURIComponent(text + "\n" + CONFIG.INVITE_URL)}`;
+  document.getElementById("btn-share-wa").href = wa;
+})();
+
+function shareInstagram() {
+  const text = `🦄✨ ¡Estás invitado al cumpleaños de Sofía!\n` +
+               `📅 Sábado 5 de julio 2025, 4:00 PM\n` +
+               `📍 Salón Arcoiris, Monterrey NL\n\n` +
+               `#CumpleañosSofía #Unicornios #FiestaInfantil`;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("📋 Texto copiado — pégalo en Instagram Stories");
+  }).catch(() => {
+    showToast("📋 ¡Copia el texto y pégalo en Instagram!");
+  });
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(CONFIG.INVITE_URL).then(() => {
+    showToast("🔗 ¡Enlace copiado!");
+  });
+}
+
+/* ══════════ TOAST ══════════ */
+function showToast(msg) {
+  const c  = document.getElementById("toast-container");
+  const el = document.createElement("div");
+  el.className  = "toast-msg";
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+</script>
+
+<!--
+════════════════════════════════════════════════════════════
+  📋  CÓDIGO PARA GOOGLE APPS SCRIPT (guardar en Sheets)
+════════════════════════════════════════════════════════════
+Pasos:
+ 1. Abre tu Google Sheet (o crea uno nuevo).
+ 2. Menú: Extensiones > Apps Script.
+ 3. Borra el código existente y pega el siguiente:
+
+──────────────────────────────────────────────────────────
+
+const SHEET_NAME = "Confirmaciones";
+
+function doPost(e) {
+  try {
+    const ss     = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet    = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow(["Fecha/Hora","Nombre","Invitados","Evento"]);
+      sheet.getRange(1,1,1,4).setFontWeight("bold")
+           .setBackground("#7c3aed").setFontColor("#fff");
+    }
+    const data = JSON.parse(e.postData.contents);
+    sheet.appendRow([data.timestamp, data.name, data.guests, data.event]);
+    return ContentService.createTextOutput(JSON.stringify({ok:true}))
+           .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ok:false,error:err.message}))
+           .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("OK");
+}
+
+──────────────────────────────────────────────────────────
+ 4. Guardar (Ctrl+S).
+ 5. Clic en "Implementar" > "Nueva implementación".
+ 6. Tipo: "Aplicación web".
+ 7. Ejecutar como: "Yo" · Quién tiene acceso: "Cualquier usuario".
+ 8. Clic en "Implementar" y copia la URL.
+ 9. Pega esa URL en CONFIG.SHEETS_URL arriba.
+════════════════════════════════════════════════════════════
+-->
+
+</body>
+</html>
