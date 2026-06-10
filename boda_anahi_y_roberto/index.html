@@ -1,245 +1,534 @@
+# Invitación de Boda Premium - Anahí & Roberto
+
+## Características incluidas
+
+✅ Diseño elegante tipo landing page premium
+✅ Bootstrap 5
+✅ Animaciones AOS (Animate On Scroll)
+✅ Hero con imagen de fondo fullscreen
+✅ Cuenta regresiva automática
+✅ Historia de amor en timeline
+✅ Galería fotográfica
+✅ Información de ceremonia y recepción
+✅ Código de vestimenta (Dress Code)
+✅ Mesa de regalos
+✅ Google Maps integrado
+✅ RSVP por WhatsApp
+✅ Música de fondo opcional
+✅ Efecto Parallax
+✅ Totalmente responsive para móviles
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invitación de Boda - Anahí & Roberto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Boda Anahí & Roberto</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+
+:root{
+--gold:#c8a96b;
+--dark:#1d1d1d;
+--light:#faf8f5;
+}
+
 body{
-    font-family: 'Poppins', sans-serif;
-    color:#444;
+font-family:'Montserrat',sans-serif;
+background:var(--light);
+overflow-x:hidden;
+}
+
+h1,h2,h3,h4{
+font-family:'Cormorant Garamond',serif;
 }
 
 .hero{
-    min-height:100vh;
-    background:
-    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)),
-    url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1600&q=80');
-    background-size:cover;
-    background-position:center;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
+height:100vh;
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1800&q=80');
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
 }
 
 .hero h1{
-    font-family:'Playfair Display', serif;
-    font-size:4rem;
+font-size:5rem;
+font-weight:700;
 }
 
 .section-title{
-    font-family:'Playfair Display', serif;
-    color:#8b6f47;
-    margin-bottom:30px;
+color:var(--gold);
+margin-bottom:40px;
+text-align:center;
 }
 
-.countdown-box{
-    background:#f8f5f0;
-    border-radius:15px;
-    padding:20px;
-    box-shadow:0 0 15px rgba(0,0,0,.08);
+.gold-btn{
+background:var(--gold);
+border:none;
+color:white;
+padding:12px 30px;
+border-radius:50px;
+transition:.3s;
+}
+
+.gold-btn:hover{
+transform:translateY(-3px);
+}
+
+.count-box{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 5px 25px rgba(0,0,0,.08);
+}
+
+.timeline{
+position:relative;
+padding-left:30px;
+}
+
+.timeline::before{
+content:'';
+position:absolute;
+left:10px;
+top:0;
+bottom:0;
+width:2px;
+background:var(--gold);
+}
+
+.timeline-item{
+position:relative;
+margin-bottom:40px;
+}
+
+.timeline-item::before{
+content:'';
+position:absolute;
+left:-28px;
+top:10px;
+width:16px;
+height:16px;
+border-radius:50%;
+background:var(--gold);
 }
 
 .gallery img{
-    height:300px;
-    object-fit:cover;
-    border-radius:12px;
-    width:100%;
+height:350px;
+object-fit:cover;
+width:100%;
+border-radius:15px;
+transition:.4s;
 }
 
-.info-card{
-    background:white;
-    border-radius:15px;
-    padding:25px;
-    box-shadow:0 0 15px rgba(0,0,0,.08);
-    height:100%;
+.gallery img:hover{
+transform:scale(1.03);
+}
+
+.card-premium{
+border:none;
+border-radius:20px;
+padding:25px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+height:100%;
+}
+
+.dress-card{
+background:white;
+padding:40px;
+border-radius:20px;
+text-align:center;
+}
+
+.gift-box{
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
 
 footer{
-    background:#8b6f47;
-    color:white;
+background:#111;
+color:white;
+padding:50px 0;
 }
+
+.music-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+z-index:999;
+border:none;
+width:60px;
+height:60px;
+border-radius:50%;
+background:var(--gold);
+color:white;
+font-size:24px;
+}
+
 </style>
 </head>
 <body>
 
+<!-- AUDIO -->
+
+<audio id="music" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music-btn" onclick="toggleMusic()">
+♫
+</button>
+
 <!-- HERO -->
+
 <section class="hero">
-    <div class="container">
-        <h4>Nos Casamos</h4>
-        <h1>Anahí & Roberto</h1>
-        <p class="lead">14 de Febrero de 2027</p>
+<div class="container">
 
-        <a href="#confirmar" class="btn btn-light btn-lg mt-3">
-            Confirmar Asistencia
-        </a>
-    </div>
+<p class="fs-4">Nos Casamos</p>
+
+<h1>Anahí & Roberto</h1>
+
+<p class="lead">
+14 de Febrero de 2027
+</p>
+
+<a href="#rsvp" class="gold-btn text-decoration-none">
+Confirmar Asistencia
+</a>
+
+</div>
 </section>
 
-<!-- MENSAJE -->
+<!-- FRASE -->
+
 <section class="py-5">
-    <div class="container text-center">
-        <h2 class="section-title">Nuestra Historia</h2>
-        <p class="col-lg-8 mx-auto">
-            Después de muchos años compartiendo sueños, aventuras y momentos inolvidables,
-            hemos decidido unir nuestras vidas para siempre. Nos encantaría que formaras
-            parte de este día tan especial.
-        </p>
-    </div>
+<div class="container text-center" data-aos="fade-up">
+
+<h2 class="section-title">
+Con la bendición de nuestras familias
+</h2>
+
+<p class="col-lg-8 mx-auto">
+El amor es la fuerza que nos une y el motivo que hoy nos lleva a celebrar
+uno de los momentos más importantes de nuestras vidas.
+Queremos compartir esta alegría contigo.
+</p>
+
+</div>
 </section>
 
-<!-- CUENTA REGRESIVA -->
-<section class="py-5 bg-light">
-    <div class="container text-center">
-        <h2 class="section-title">Faltan</h2>
+<!-- COUNTDOWN -->
 
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="countdown-box">
-                    <h3 id="countdown"></h3>
-                </div>
-            </div>
-        </div>
-    </div>
+<section class="py-5 bg-white">
+<div class="container">
+
+<h2 class="section-title">Cuenta Regresiva</h2>
+
+<div class="row justify-content-center">
+
+<div class="col-lg-6">
+
+<div class="count-box text-center">
+
+<h2 id="countdown"></h2>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!-- HISTORIA -->
+
+<section class="py-5">
+<div class="container">
+
+<h2 class="section-title">Nuestra Historia</h2>
+
+<div class="timeline">
+
+<div class="timeline-item" data-aos="fade-right">
+<h4>2019 - Nuestro primer encuentro</h4>
+<p>Coincidimos en una reunión de amigos y desde ese momento algo especial comenzó.</p>
+</div>
+
+<div class="timeline-item" data-aos="fade-right">
+<h4>2021 - Nuestro primer viaje</h4>
+<p>Descubrimos que viajar juntos era nuestra actividad favorita.</p>
+</div>
+
+<div class="timeline-item" data-aos="fade-right">
+<h4>2025 - La propuesta</h4>
+<p>En una cena romántica llegó la pregunta más importante.</p>
+</div>
+
+<div class="timeline-item" data-aos="fade-right">
+<h4>2027 - Nuestra boda</h4>
+<p>Comienza una nueva aventura para toda la vida.</p>
+</div>
+
+</div>
+
+</div>
 </section>
 
 <!-- EVENTO -->
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4">
 
-            <div class="col-md-6">
-                <div class="info-card">
-                    <h3>💒 Ceremonia</h3>
-                    <p><strong>Hora:</strong> 5:00 PM</p>
-                    <p><strong>Lugar:</strong> Iglesia San Miguel</p>
-                    <p>Av. Principal 123, Monterrey, Nuevo León</p>
-                </div>
-            </div>
+<section class="py-5 bg-white">
 
-            <div class="col-md-6">
-                <div class="info-card">
-                    <h3>🎉 Recepción</h3>
-                    <p><strong>Hora:</strong> 7:00 PM</p>
-                    <p><strong>Lugar:</strong> Hacienda Los Encinos</p>
-                    <p>Carretera Nacional Km 250, Monterrey, Nuevo León</p>
-                </div>
-            </div>
+<div class="container">
 
-        </div>
-    </div>
+<h2 class="section-title">Detalles del Evento</h2>
+
+<div class="row g-4">
+
+<div class="col-md-6">
+<div class="card-premium">
+
+<h3>💒 Ceremonia</h3>
+
+<p>5:00 PM</p>
+
+<p>
+Iglesia San Miguel Arcángel<br>
+Monterrey, Nuevo León
+</p>
+
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="card-premium">
+
+<h3>🎉 Recepción</h3>
+
+<p>7:00 PM</p>
+
+<p>
+Hacienda Los Encinos<br>
+Monterrey, Nuevo León
+</p>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- GALERÍA -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="section-title text-center">Nuestros Momentos</h2>
+<!-- GALERIA -->
 
-        <div class="row gallery g-4">
+<section class="py-5">
 
-            <div class="col-md-4">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80">
-            </div>
+<div class="container">
 
-            <div class="col-md-4">
-                <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80">
-            </div>
+<h2 class="section-title">Galería</h2>
 
-            <div class="col-md-4">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80">
-            </div>
+<div class="row g-4 gallery">
 
-        </div>
-    </div>
+<div class="col-md-4">
+<img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=900&q=80">
+</div>
+
+<div class="col-md-4">
+<img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80">
+</div>
+
+<div class="col-md-4">
+<img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=900&q=80">
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- DRESS CODE -->
+
+<section class="py-5 bg-white">
+
+<div class="container">
+
+<h2 class="section-title">Dress Code</h2>
+
+<div class="dress-card">
+
+<h3>Elegante Formal</h3>
+
+<p>
+Caballeros: Traje oscuro<br>
+Damas: Vestido de noche
+</p>
+
+<p>
+Evitar colores blanco y marfil.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- MESA DE REGALOS -->
+
+<section class="py-5">
+
+<div class="container">
+
+<h2 class="section-title">Mesa de Regalos</h2>
+
+<div class="gift-box text-center">
+
+<h4>Tu presencia es nuestro mejor regalo</h4>
+
+<p>
+Si deseas tener un detalle con nosotros,
+puedes contribuir a nuestra luna de miel.
+</p>
+
+<p>
+CLABE: 012345678901234567
+</p>
+
+<a href="#" class="gold-btn text-decoration-none">
+Ver Mesa de Regalos
+</a>
+
+</div>
+
+</div>
+
 </section>
 
 <!-- MAPA -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="section-title text-center">Ubicación</h2>
 
-        <div class="ratio ratio-16x9">
-            <iframe
-                src="https://maps.app.goo.gl/krb8SJXNMhzCAcf46"
-                allowfullscreen>
-            </iframe>
-        </div>
+<section class="py-5 bg-white">
 
-        <div class="text-center mt-4">
-            <a
-                href="https://maps.google.com/?q=Monterrey+Nuevo+Leon"
-                target="_blank"
-                class="btn btn-outline-dark">
-                Ver en Google Maps
-            </a>
-        </div>
-    </div>
+<div class="container">
+
+<h2 class="section-title">Ubicación</h2>
+
+<div class="ratio ratio-16x9">
+
+<iframe
+src="https://maps.google.com/maps?q=Monterrey%20Nuevo%20Leon&t=&z=13&ie=UTF8&iwloc=&output=embed"
+allowfullscreen>
+</iframe>
+
+</div>
+
+</div>
+
 </section>
 
-<!-- CONFIRMAR -->
-<section id="confirmar" class="py-5 bg-light">
-    <div class="container text-center">
+<!-- RSVP -->
 
-        <h2 class="section-title">Confirmación de Asistencia</h2>
+<section id="rsvp" class="py-5">
 
-        <p>
-            Agradecemos confirmar tu asistencia antes del
-            <strong>15 de Enero de 2027</strong>.
-        </p>
+<div class="container text-center">
 
-        <a
-            href="https://wa.me/528112345678?text=Hola%20Sofia%20y%20Alejandro,%20confirmo%20mi%20asistencia%20a%20su%20boda."
-            target="_blank"
-            class="btn btn-success btn-lg">
-            Confirmar por WhatsApp
-        </a>
+<h2 class="section-title">
+Confirmación de Asistencia
+</h2>
 
-    </div>
+<p>
+Por favor confirma antes del 15 de Enero de 2027.
+</p>
+
+<a
+class="gold-btn text-decoration-none"
+href="https://wa.me/528112345678?text=Hola%20confirmo%20mi%20asistencia%20a%20su%20boda"
+target="_blank">
+
+Confirmar por WhatsApp
+
+</a>
+
+</div>
+
 </section>
 
-<footer class="py-4 text-center">
-    <div class="container">
-        <h4>Anahí & Roberto</h4>
-        <p class="mb-0">14 de Febrero de 2027</p>
-    </div>
+<footer>
+
+<div class="container text-center">
+
+<h2>Anahí & Roberto</h2>
+
+<p>
+14 de Febrero de 2027
+</p>
+
+<p>
+Gracias por ser parte de nuestra historia.
+</p>
+
+</div>
+
 </footer>
 
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
 <script>
+
+AOS.init({
+duration:1000,
+once:true
+});
+
 const weddingDate = new Date("Feb 14, 2027 17:00:00").getTime();
 
-const countdown = setInterval(() => {
+setInterval(()=>{
 
-    const now = new Date().getTime();
-    const distance = weddingDate - now;
+const now = new Date().getTime();
+const distance = weddingDate - now;
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24))
-        / (1000 * 60 * 60)
-    );
-    const minutes = Math.floor(
-        (distance % (1000 * 60 * 60))
-        / (1000 * 60)
-    );
+const days = Math.floor(distance/(1000*60*60*24));
+const hours = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+const minutes = Math.floor((distance%(1000*60*60))/(1000*60));
 
-    document.getElementById("countdown").innerHTML =
-        `${days} días • ${hours} horas • ${minutes} minutos`;
+document.getElementById("countdown").innerHTML =
+`${days} días ${hours} horas ${minutes} minutos`;
 
-    if(distance < 0){
-        clearInterval(countdown);
-        document.getElementById("countdown").innerHTML =
-            "¡Hoy es el gran día!";
-    }
+},1000);
 
-}, 1000);
+function toggleMusic(){
+
+const music = document.getElementById("music");
+
+if(music.paused){
+music.play();
+}else{
+music.pause();
+}
+
+}
+
 </script>
 
 </body>
 </html>
+```
