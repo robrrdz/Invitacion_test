@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invitación de Boda - Sofía & Alejandro</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family: 'Poppins', sans-serif;
+    color:#444;
+}
+
+.hero{
+    min-height:100vh;
+    background:
+    linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)),
+    url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1600&q=80');
+    background-size:cover;
+    background-position:center;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.hero h1{
+    font-family:'Playfair Display', serif;
+    font-size:4rem;
+}
+
+.section-title{
+    font-family:'Playfair Display', serif;
+    color:#8b6f47;
+    margin-bottom:30px;
+}
+
+.countdown-box{
+    background:#f8f5f0;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 0 15px rgba(0,0,0,.08);
+}
+
+.gallery img{
+    height:300px;
+    object-fit:cover;
+    border-radius:12px;
+    width:100%;
+}
+
+.info-card{
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 0 15px rgba(0,0,0,.08);
+    height:100%;
+}
+
+footer{
+    background:#8b6f47;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <h4>Nos Casamos</h4>
+        <h1>Sofía & Alejandro</h1>
+        <p class="lead">14 de Febrero de 2027</p>
+
+        <a href="#confirmar" class="btn btn-light btn-lg mt-3">
+            Confirmar Asistencia
+        </a>
+    </div>
+</section>
+
+<!-- MENSAJE -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="section-title">Nuestra Historia</h2>
+        <p class="col-lg-8 mx-auto">
+            Después de muchos años compartiendo sueños, aventuras y momentos inolvidables,
+            hemos decidido unir nuestras vidas para siempre. Nos encantaría que formaras
+            parte de este día tan especial.
+        </p>
+    </div>
+</section>
+
+<!-- CUENTA REGRESIVA -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="section-title">Faltan</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="countdown-box">
+                    <h3 id="countdown"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EVENTO -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h3>💒 Ceremonia</h3>
+                    <p><strong>Hora:</strong> 5:00 PM</p>
+                    <p><strong>Lugar:</strong> Iglesia San Miguel</p>
+                    <p>Av. Principal 123, Monterrey, Nuevo León</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h3>🎉 Recepción</h3>
+                    <p><strong>Hora:</strong> 7:00 PM</p>
+                    <p><strong>Lugar:</strong> Hacienda Los Encinos</p>
+                    <p>Carretera Nacional Km 250, Monterrey, Nuevo León</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center">Nuestros Momentos</h2>
+
+        <div class="row gallery g-4">
+
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80">
+            </div>
+
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=800&q=80">
+            </div>
+
+            <div class="col-md-4">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MAPA -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center">Ubicación</h2>
+
+        <div class="ratio ratio-16x9">
+            <iframe
+                src="https://maps.google.com/maps?q=Monterrey%20Nuevo%20Leon&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="text-center mt-4">
+            <a
+                href="https://maps.google.com/?q=Monterrey+Nuevo+Leon"
+                target="_blank"
+                class="btn btn-outline-dark">
+                Ver en Google Maps
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CONFIRMAR -->
+<section id="confirmar" class="py-5 bg-light">
+    <div class="container text-center">
+
+        <h2 class="section-title">Confirmación de Asistencia</h2>
+
+        <p>
+            Agradecemos confirmar tu asistencia antes del
+            <strong>15 de Enero de 2027</strong>.
+        </p>
+
+        <a
+            href="https://wa.me/528112345678?text=Hola%20Sofia%20y%20Alejandro,%20confirmo%20mi%20asistencia%20a%20su%20boda."
+            target="_blank"
+            class="btn btn-success btn-lg">
+            Confirmar por WhatsApp
+        </a>
+
+    </div>
+</section>
+
+<footer class="py-4 text-center">
+    <div class="container">
+        <h4>Sofía & Alejandro</h4>
+        <p class="mb-0">14 de Febrero de 2027</p>
+    </div>
+</footer>
+
+<script>
+const weddingDate = new Date("Feb 14, 2027 17:00:00").getTime();
+
+const countdown = setInterval(() => {
+
+    const now = new Date().getTime();
+    const distance = weddingDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+        (distance % (1000 * 60 * 60 * 24))
+        / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor(
+        (distance % (1000 * 60 * 60))
+        / (1000 * 60)
+    );
+
+    document.getElementById("countdown").innerHTML =
+        `${days} días • ${hours} horas • ${minutes} minutos`;
+
+    if(distance < 0){
+        clearInterval(countdown);
+        document.getElementById("countdown").innerHTML =
+            "¡Hoy es el gran día!";
+    }
+
+}, 1000);
+</script>
+
+</body>
+</html>
