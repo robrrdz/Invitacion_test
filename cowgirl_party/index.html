@@ -153,24 +153,23 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
   <div class="section">
     <div class="sec-title">🤠 Detalles de la fiesta</div>
     <div class="info-grid">
-      <div class="info-pill"><span class="ic">📅</span><div class="lbl">Fecha</div><div class="val">Viernes 18 de Julio 2025</div></div>
+      <div class="info-pill"><span class="ic">📅</span><div class="lbl">Fecha</div><div class="val">Viernes 18 de Julio 2026</div></div>
       <div class="info-pill"><span class="ic">🕖</span><div class="lbl">Hora</div><div class="val">7:00 PM en adelante</div></div>
       <div class="info-pill"><span class="ic">📍</span><div class="lbl">Lugar</div><div class="val">Hidalgo s/n, El Barrial, Santiago NL</div></div>
-      <div class="info-pill"><span class="ic">🪩</span><div class="lbl">Ambiente</div><div class="val">Disco + Vaquero + Buena vibra</div></div>
+      <div class="info-pill"><span class="ic">🪩</span><div class="lbl">Ambiente</div><div class="val">Vaquero + Buena vibra</div></div>
     </div>
   </div>
 
   <!-- ══ DRESS CODE ══ -->
   <div class="dresscode">
     <div class="dc-title">No olvides tu</div>
-    <div class="dc-sub">⭐ Outfit Vaquero ⭐</div>
+    <div class="dc-sub">⭐Outfit Vaquero⭐</div>
     <div class="dc-items">
       <span class="dc-tag">🤠 Sombrero vaquero</span>
       <span class="dc-tag">👢 Botas tejanas</span>
       <span class="dc-tag">💎 Lentejuelas &amp; brillos</span>
       <span class="dc-tag">🩷 Pink es bienvenido</span>
       <span class="dc-tag">👖 Pantalón de mezclilla</span>
-      <span class="dc-tag">🌟 Accesorios disco</span>
     </div>
     <p class="dc-warn">🐄 Mientras más vaquero, ¡más divertido! 🐄</p>
   </div>
@@ -225,6 +224,8 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     <p style="font-size:.88rem;color:#6b0030;font-weight:700;margin-bottom:.8rem">
       Hidalgo s/n, El Barrial, Santiago, Nuevo León
     </p>
+           <img src="fotos/quinta.jpg"/>
+    
     <div class="map-wrap">
       <iframe
         src="https://www.google.com/maps?q=25.47268295288086,-100.18666076660156&z=17&hl=es&output=embed"
@@ -268,7 +269,7 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 const CFG = {
   WA:       "5218112345678",
   EVENT:    "🤠 Cowgirl Party — Nancy 40 🎉",
-  DATE:     "Viernes 18 de julio 2025 a las 7:00 PM",
+  DATE:     "Viernes 18 de julio 2026 a las 7:00 PM",
   PLACE:    "Hidalgo s/n, El Barrial, Santiago, Nuevo León",
   CAL_S:    "20250718T190000",
   CAL_E:    "20250718T230000",
@@ -296,7 +297,7 @@ tsParticles.load("particles",{
 
 /* ══ CUENTA REGRESIVA ══ */
 function tick(){
-  const now=new Date(), target=new Date("2025-07-18T19:00:00");
+  const now=new Date(), target=new Date("2026-07-18T19:00:00");
   const diff=target-now;
   if(diff<=0){
     document.getElementById("cd-grid").innerHTML='<div class="cd-box"><div class="cd-num">🎉</div><div class="cd-lbl">¡Es hoy!</div></div>';
@@ -398,34 +399,5 @@ function showToast(msg){
   setTimeout(()=>el.remove(),3100);
 }
 </script>
-
-<!--
-════════════════════════════════════════════════════
-  📋  APPS SCRIPT para guardar en Google Sheets
-════════════════════════════════════════════════════
-1. Abre tu Google Sheet
-2. Extensiones → Apps Script
-3. Pega este código y guarda:
-
-const SHEET = "Confirmaciones";
-function doPost(e) {
-  const ss   = SpreadsheetApp.getActiveSpreadsheet();
-  let sh     = ss.getSheetByName(SHEET);
-  if (!sh) {
-    sh = ss.insertSheet(SHEET);
-    sh.appendRow(["Fecha/Hora","Nombre","Invitados","Evento"]);
-    sh.getRange(1,1,1,4).setFontWeight("bold").setBackground("#e8006f").setFontColor("#fff");
-  }
-  const d = JSON.parse(e.postData.contents);
-  sh.appendRow([d.timestamp, d.name, d.guests, d.event]);
-  return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
-}
-function doGet() { return ContentService.createTextOutput("OK"); }
-
-4. Implementar → Nueva implementación → Aplicación web
-5. Acceso: Cualquier usuario → Implementar → Copiar URL
-6. Pegar URL en CFG.SHEETS dentro del <script>
-════════════════════════════════════════════════════
--->
 </body>
 </html>
