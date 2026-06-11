@@ -111,6 +111,43 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 @keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fdn{from{opacity:1}to{opacity:0}}
 
+/* ── BOTÓN DE MÚSICA FLOTANTE ── */
+.music-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--hot);
+  border: 2px solid #fff;
+  color: white;
+  box-shadow: 0 4px 15px rgba(232,0,111,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  transition: all 0.3s ease;
+}
+.music-btn.playing {
+  animation: rotateDisc 3s linear infinite;
+  background: #25d366;
+}
+.music-btn.paused {
+  animation: pulseBtn 1.5s infinite;
+}
+@keyframes rotateDisc {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulseBtn {
+  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(232,0,111,0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 4px 25px rgba(232,0,111,0.7); }
+  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(232,0,111,0.4); }
+}
+
 @media(max-width:480px){
   .invite{margin:.5rem;border-radius:1.5rem}
   .age-balloon{font-size:5.5rem}
@@ -124,6 +161,12 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 
 <div id="particles"></div>
 <div id="toast-box"></div>
+
+<!-- Elemento de Audio Oculto -->
+<audio id="bg-music" src="musica/musica.mp3" loop></audio>
+
+<!-- Botón Flotante de Control de Música -->
+<button id="music-control" class="music-btn paused" onclick="toggleMusic(event)">📻</button>
 
 <div class="invite">
 
@@ -178,18 +221,14 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
   <div class="carousel-wrap">
     <div class="section" style="padding-bottom:.5rem;border-bottom:none">
       <div class="sec-title">📸 Galería</div>
-      <!-- Cargar desde GitHub repo
-      <div class="repo-section" style="padding:0 0 1rem;background:transparent">
-        <div class="repo-label">🐙 Cargar fotos desde un repositorio de GitHub</div>
-        <div class="repo-input-row">
-          <input type="text" id="repo-input" placeholder="usuario/repositorio (ej: nancy/cumple40)" />
-          <button class="btn-hot" onclick="loadRepo()">Cargar</button>
-        </div>
-        <p class="repo-hint">Sube tus fotos (.jpg/.png/.webp) a GitHub y ponlas aquí para que aparezcan en el carrusel.</p>
-      </div> -->
     </div>
-    <div id="carrusel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators" id="car-indicators"></div>
+    <!-- Se agregaron los atributos data-bs-ride y data-bs-interval para el auto-play automático -->
+    <div id="carrusel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <div class="carousel-indicators" id="car-indicators">
+        <button type="button" data-bs-target="#carrusel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#carrusel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#carrusel" data-bs-slide-to="2"></button>
+      </div>
       <div class="carousel-inner" id="car-inner">
         <!-- fotos default -->
         <div class="carousel-item active">
@@ -220,8 +259,8 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     <p style="font-size:.88rem;color:#6b0030;font-weight:700;margin-bottom:.8rem">
       Hidalgo s/n, El Barrial, Santiago, Nuevo León
     </p>
-<img src="fotos/quinta.jpg" class="img-fluid rounded mb-3" alt="Lugar del evento"/>
-    
+    <img src="fotos/quinta.jpg" class="img-fluid rounded mb-3" alt="Lugar del evento"/>
+      
     <div class="map-wrap">
       <iframe
         src="https://www.google.com/maps?q=25.47268295288086,-100.18666076660156&z=17&hl=es&output=embed"
@@ -267,13 +306,62 @@ const CFG = {
   EVENT:    "🤠 Cowgirl Party — Nancy 40 🎉",
   DATE:     "Viernes 18 de julio 2026 a las 7:00 PM",
   PLACE:    "Hidalgo s/n, El Barrial, Santiago, Nuevo León",
-  CAL_S:    "20250718T190000",
-  CAL_E:    "20250718T230000",
+  CAL_S:    "20260718T190000",
+  CAL_E:    "20260718T230000",
   MAPS:     "https://www.google.com/maps?q=25.47268295288086,-100.18666076660156&z=17",
   URL:      window.location.href,
-  // Google Sheets Apps Script URL:
   SHEETS:   "https://script.google.com/macros/s/TU_URL_AQUI/exec",
 };
+
+/* ══ LOGICA DE MÚSICA DE FONDO ══ */
+const audio = document.getElementById("bg-music");
+const musicBtn = document.getElementById("music-control");
+
+function playAudio() {
+  audio.play().then(() => {
+    musicBtn.textContent = "🎵";
+    musicBtn.classList.remove("paused");
+    musicBtn.classList.add("playing");
+  }).catch(err => console.log("Autoplay bloqueado por el navegador, esperando interacción."));
+}
+
+function toggleMusic(e) {
+  if (e) e.stopPropagation();
+  if (audio.paused) {
+    audio.play();
+    musicBtn.textContent = "🎵";
+    musicBtn.classList.remove("paused");
+    musicBtn.classList.add("playing");
+    showToast("🎵 Música activada");
+  } else {
+    audio.pause();
+    musicBtn.textContent = "🔇";
+    musicBtn.classList.remove("playing");
+    musicBtn.classList.add("paused");
+    showToast("🔇 Música pausada");
+  }
+}
+
+// Intentar reproducir al cargar la página
+window.addEventListener("DOMContentLoaded", () => {
+  playAudio();
+  // Forzar reproducción al primer toque en cualquier parte de la pantalla si estaba bloqueado
+  document.body.addEventListener("click", () => {
+    if (audio.paused && !musicBtn.classList.contains("user-paused")) {
+      playAudio();
+    }
+  }, { once: true });
+});
+
+// Registrar si el usuario explícitamente pausó para no reactivarla con clics locos
+musicBtn.addEventListener("click", () => {
+  if (audio.paused) {
+    musicBtn.classList.add("user-paused");
+  } else {
+    musicBtn.classList.remove("user-paused");
+  }
+});
+
 
 /* ══ PARTÍCULAS ══ */
 tsParticles.load("particles",{
@@ -339,39 +427,6 @@ async function confirmWA(e){
   document.getElementById("btn-cal").href=`https://calendar.google.com/calendar/render?action=TEMPLATE&${p}`;
 })();
 
-/* ══ CARRUSEL GITHUB ══ */
-async function loadRepo(){
-  const val=document.getElementById("repo-input").value.trim();
-  if(!val||!val.includes("/")){showToast("⚠️ Escribe usuario/repositorio");return;}
-  showToast("⏳ Cargando fotos...");
-  try{
-    const [owner,repo]=val.split("/");
-    const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/`);
-    if(!r.ok)throw new Error("Repositorio no encontrado");
-    const files=await r.json();
-    const imgs=files.filter(f=>/\.(jpe?g|png|webp|gif)$/i.test(f.name));
-    if(!imgs.length){showToast("❌ No hay imágenes en ese repositorio");return;}
-    buildCarousel(imgs.map(f=>({url:f.download_url,name:f.name})));
-    showToast(`✅ ${imgs.length} fotos cargadas`);
-  }catch(err){showToast("❌ Error: "+err.message);}
-}
-
-function buildCarousel(photos){
-  const inner=document.getElementById("car-inner");
-  const inds=document.getElementById("car-indicators");
-  inner.innerHTML="";inds.innerHTML="";
-  photos.forEach((p,i)=>{
-    const item=document.createElement("div");
-    item.className="carousel-item"+(i===0?" active":"");
-    item.innerHTML=`<img src="${p.url}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/560x300?text=Foto'"/><div class="carousel-caption-inner">📸 ${p.name.replace(/\.[^.]+$/,"")}</div>`;
-    inner.appendChild(item);
-    const btn=document.createElement("button");
-    btn.type="button";btn.dataset.bsTarget="#carrusel";btn.dataset.bsSlideTo=i;
-    if(i===0)btn.classList.add("active");
-    inds.appendChild(btn);
-  });
-}
-
 /* ══ COMPARTIR ══ */
 (function(){
   const txt=`🤠✨ ¡Estás invitada al *Cowgirl Party* de Nancy!\n🎂 ¡Festejamos sus 40 años!\n📅 ${CFG.DATE}\n📍 ${CFG.PLACE}\n👗 Dress code: ¡OUTFIT VAQUERO!\n👇 Ver invitación:`;
@@ -379,7 +434,7 @@ function buildCarousel(photos){
 })();
 
 function copyIG(){
-  const t=`🤠✨ ¡Cowgirl Party de Nancy!\n🎂 ¡40 años con todo el estilo vaquero!\n📅 18 de julio 2025 · 7:00 PM\n📍 El Barrial, Santiago NL\n👢 Dress code: OUTFIT VAQUERO\n🌵 No faltes!\n\n#CowgirlParty #Nancy40 #OutfitVaquero #SantiagoNL #Fiesta40`;
+  const t=`🤠✨ ¡Cowgirl Party de Nancy!\n🎂 ¡40 años con todo el estilo vaquero!\n📅 18 de julio 2026 · 7:00 PM\n📍 El Barrial, Santiago NL\n👢 Dress code: OUTFIT VAQUERO\n🌵 No faltes!\n\n#CowgirlParty #Nancy40 #OutfitVaquero #SantiagoNL #Fiesta40`;
   navigator.clipboard.writeText(t).then(()=>showToast("📸 ¡Texto copiado para Instagram!")).catch(()=>showToast("📋 Copia el texto manualmente"));
 }
 function copyLink(){
