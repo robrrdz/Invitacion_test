@@ -21,12 +21,96 @@
 body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 #particles{position:fixed;inset:0;z-index:0;pointer-events:none}
 
+/* ── REFERENCIA GRÁFICA (ELEMENTOS FLOTANTES A LOS LADOS) ── */
+.grafico-base {
+  position: absolute;
+  pointer-events: none; /* No obstruyen los clics ni interacciones */
+  z-index: 0; /* Quedan detrás de los textos y botones interactivos */
+  transform: translate(-50%, -50%);
+}
+
+/* Posicionamiento estratégico a lo largo de la invitación */
+.grafico-cow-hide-top-left {
+  top: 4%;
+  left: 10%;
+  width: 25%;
+  opacity: 0.15;
+}
+.grafico-kiss-cow {
+  top: 12%;
+  left: 18%;
+  width: 16%;
+}
+.grafico-star-plateada {
+  top: 7%;
+  left: 50%;
+  width: 8%;
+  opacity: 0.7;
+}
+.grafico-star-rosa-brillo {
+  top: 16%;
+  left: 82%;
+  width: 13%;
+}
+.grafico-botas-rosa-lado {
+  top: 42%;
+  left: -5%;
+  width: 20%;
+  transform: translateY(-50%) rotate(-12deg);
+}
+.grafico-star-plateada-lado {
+  top: 52%;
+  right: -6%;
+  width: 11%;
+  transform: translateY(-50%) rotate(18deg);
+}
+.grafico-cactus-disco-inferior {
+  top: 83%;
+  left: -4%;
+  width: 22%;
+  transform: translateY(-50%) rotate(6deg);
+}
+.grafico-vaca-chicle-inferior {
+  top: 91%;
+  right: -5%;
+  width: 24%;
+  transform: translateY(-50%) rotate(-4deg);
+}
+
 /* ── CARD ── */
-.invite{position:relative;z-index:1;max-width:560px;margin:1.5rem auto 3rem;background:var(--cream);border-radius:2.5rem;overflow:hidden;box-shadow:0 0 0 3px var(--hot),0 0 60px #e8006f55,0 0 120px #00000066}
+.invite{
+  position:relative;
+  z-index:1;
+  max-width:560px;
+  margin:1.5rem auto 3rem;
+  background:var(--cream);
+  border-radius:2.5rem;
+  overflow:hidden;
+  box-shadow:0 0 0 3px var(--hot),0 0 60px #e8006f55,0 0 120px #00000066;
+}
 
 /* ── HERO ── */
-.hero{background:#fff;padding:2.5rem 1.5rem 1.5rem;text-align:center;position:relative;overflow:hidden;border-bottom:3px solid var(--hot)}
-.cowhide{position:absolute;top:0;left:0;right:0;height:60px;background:repeating-conic-gradient(#000 0% 10%,transparent 10% 20%) 0 0/30px 30px;opacity:.06}
+.hero{
+  background:#fff;
+  padding:2.5rem 1.5rem 1.5rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  border-bottom:3px solid var(--hot);
+  z-index: 1;
+}
+/* Reemplazado el patrón geométrico por la textura de vaca real */
+.cowhide{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:100%;
+  background-image: url('fotos/textura_vaca.png');
+  background-size: cover;
+  opacity: .04;
+  z-index: -1;
+}
 .age-balloon{font-family:'Bebas Neue',cursive;font-size:7.5rem;line-height:1;letter-spacing:-4px;background:linear-gradient(160deg,#d0d0e0 0%,#ffffff 30%,#a0a0b8 60%,#e8e8f8 80%,#8888a8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(2px 3px 0 #aaa);display:inline-block}
 .birthday-script{font-family:'Dancing Script',cursive;font-size:1.9rem;color:#555;margin-top:-.5rem;display:block}
 .name-big{font-family:'Bebas Neue',cursive;font-size:4.2rem;letter-spacing:2px;color:var(--hot);text-shadow:3px 3px 0 #ffd6eb,5px 5px 0 #c0004f;line-height:1;display:block}
@@ -46,7 +130,7 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 .cd-lbl{font-size:.65rem;letter-spacing:.1em;color:var(--silver2);text-transform:uppercase}
 
 /* ── INFO ── */
-.section{padding:1.8rem 1.5rem;border-bottom:2px dashed #f9c;background:#fff}
+.section{padding:1.8rem 1.5rem;border-bottom:2px dashed #f9c;background:#fff;position:relative;z-index:1;}
 .section:nth-child(odd){background:#fff8fc}
 .sec-title{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:2px;color:var(--hot);display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
@@ -68,16 +152,6 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 #carrusel .carousel-inner img{height:300px;object-fit:cover;width:100%}
 .carousel-caption-inner{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,#000a,transparent);color:#fff;padding:.6rem 1rem;font-weight:700;font-size:.88rem;text-align:center}
 .carousel-indicators [data-bs-target]{background-color:var(--hot)}
-
-/* ── REPO INPUT ── */
-.repo-section{padding:1.4rem 1.5rem;background:#fff8fc;border-bottom:2px dashed #f9c}
-.repo-label{font-size:.8rem;font-weight:700;color:var(--hot);margin-bottom:.4rem}
-.repo-input-row{display:flex;gap:.5rem}
-.repo-input-row input{flex:1;border:2px solid #ffd6eb;border-radius:.6rem;padding:.45rem .8rem;font-size:.85rem;outline:none;font-family:'Nunito',sans-serif}
-.repo-input-row input:focus{border-color:var(--hot)}
-.btn-hot{background:var(--hot);color:#fff;border:none;border-radius:.6rem;padding:.45rem 1rem;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap;font-family:'Nunito',sans-serif}
-.btn-hot:hover{background:#c0005f}
-.repo-hint{font-size:.72rem;color:#aaa;margin-top:.35rem}
 
 /* ── MAPA ── */
 .map-wrap{border-radius:1rem;overflow:hidden;border:3px solid #ffd6eb;margin-bottom:.8rem}
@@ -116,7 +190,7 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
-  z-index: 1000;
+  z-index: 10000; /* Asegura estar por encima de los gráficos decorativos */
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -162,15 +236,22 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 <div id="particles"></div>
 <div id="toast-box"></div>
 
-<!-- Elemento de Audio Oculto -->
 <audio id="bg-music" src="musica/musica.mp3" loop></audio>
 
-<!-- Botón Flotante de Control de Música -->
 <button id="music-control" class="music-btn paused" onclick="toggleMusic(event)">📻</button>
 
 <div class="invite">
 
-  <!-- ══ HERO ══ -->
+  <!--<img src="fotos/fondo1.png" class="grafico-base grafico-cow-hide-top-left" alt=""/>-->
+  <!--<img src="fotos/labios_vaca.png" class="grafico-base grafico-kiss-cow" alt=""/>-->
+  <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada" alt=""/>
+  <img src="fotos/fondo3.png" class="grafico-base grafico-star-rosa-brillo" alt=""/>
+
+  <img src="fotos/fondo4.png" class="grafico-base grafico-botas-rosa-lado" alt=""/>
+  <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada-lado" alt=""/>
+
+  <!--<img src="fotos/cactus_rosa_disco.png" class="grafico-base grafico-cactus-disco-inferior" alt=""/>-->
+  <img src="fotos/fondo1.png" class="grafico-base grafico-vaca-chicle-inferior" alt=""/>
   <div class="hero">
     <div class="cowhide"></div>
     <span class="age-balloon">40</span>
@@ -181,7 +262,6 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     <div class="star-row">★ ★ ★ ★ ★</div>
   </div>
 
-  <!-- ══ CUENTA REGRESIVA ══ -->
   <div class="countdown-wrap">
     <div class="countdown-title">⏳ Faltan...</div>
     <div class="countdown-grid" id="cd-grid">
@@ -192,7 +272,6 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     </div>
   </div>
 
-  <!-- ══ INFO ══ -->
   <div class="section">
     <div class="sec-title">🤠 Detalles de la fiesta</div>
     <div class="info-grid">
@@ -203,26 +282,23 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     </div>
   </div>
 
-  <!-- ══ DRESS CODE ══ -->
   <div class="dresscode">
     <div class="dc-title">No olvides tu</div>
     <div class="dc-sub">⭐Outfit Vaquero⭐</div>
     <div class="dc-items">
       <span class="dc-tag">🤠 Sombrero vaquero</span>
       <span class="dc-tag">👢 Botas tejanas</span>
-      <span class="dc-tag">💎 Lentejuelas &amp; brillos</span>
+      <span class="dc-tag">💎 Lentejuelas & brillos</span>
       <span class="dc-tag">🩷 Pink es bienvenido</span>
       <span class="dc-tag">👖 Pantalón de mezclilla</span>
     </div>
     <p class="dc-warn">🐄 Mientras más vaquero, ¡más divertido! 🐄</p>
   </div>
 
-  <!-- ══ CARRUSEL ══ -->
   <div class="carousel-wrap">
     <div class="section" style="padding-bottom:.5rem;border-bottom:none">
       <div class="sec-title">📸 Galería</div>
     </div>
-    <!-- Se agregaron los atributos data-bs-ride y data-bs-interval para el auto-play automático -->
     <div id="carrusel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
       <div class="carousel-indicators" id="car-indicators">
         <button type="button" data-bs-target="#carrusel" data-bs-slide-to="0" class="active"></button>
@@ -230,17 +306,16 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
         <button type="button" data-bs-target="#carrusel" data-bs-slide-to="2"></button>
       </div>
       <div class="carousel-inner" id="car-inner">
-        <!-- fotos default -->
         <div class="carousel-item active">
-          <img src="fotos/foto1.jpeg" alt="Foto 1"/>
+          <img src="fotos/foto1.jpg" alt="Foto 1"/>
           <div class="carousel-caption-inner">🤠 Ready to party!</div>
         </div>
         <div class="carousel-item">
-          <img src="fotos/foto2.jpeg" alt="Foto 2"/>
+          <img src="fotos/foto2.jpg" alt="Foto 2"/>
           <div class="carousel-caption-inner">🌟 Cowgirl vibes</div>
         </div>
         <div class="carousel-item">
-          <img src="fotos/foto3.jpeg" alt="Foto 3"/>
+          <img src="fotos/foto3.jpg" alt="Foto 3"/>
           <div class="carousel-caption-inner">🪩 Disco + Vaquero = 🔥</div>
         </div>
       </div>
@@ -253,7 +328,6 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     </div>
   </div>
 
-  <!-- ══ MAPA ══ -->
   <div class="section">
     <div class="sec-title">📍 ¿Cómo llegar?</div>
     <p style="font-size:.88rem;color:#6b0030;font-weight:700;margin-bottom:.8rem">
@@ -273,7 +347,6 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
     </a>
   </div>
 
-  <!-- ══ CONFIRMACIÓN ══ -->
   <div class="section">
     <div class="sec-title">✅ Confirmar asistencia</div>
     <div class="confirm-box">
@@ -290,13 +363,26 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
       </a>
     </div>
 
-    <!-- Google Calendar -->
     <div style="margin-top:1rem;text-align:center">
       <a id="btn-cal" class="btn-cal" href="#" target="_blank" rel="noopener">
         📆 Agregar a Google Calendar
       </a>
     </div>
   </div>
+
+  <div class="share-box">
+    <div class="share-title">✨ ¡Comparte la fiesta!</div>
+    <div class="share-sub">Envía la invitación a tus amigos y conocidos</div>
+    <div class="share-btns">
+      <a id="btn-share-wa" href="#" target="_blank" class="btn-share-wa">🟢 WhatsApp</a>
+      <button class="btn-copy" onclick="copyLink()">🔗 Enlace</button>
+      <button class="btn-copy" onclick="copyIG()">📸 Instagram</button>
+    </div>
+  </div>
+
+  <div class="footer">¡Te esperamos para pasar una noche inolvidable! 🤠✨</div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -342,10 +428,8 @@ function toggleMusic(e) {
   }
 }
 
-// Intentar reproducir al cargar la página
 window.addEventListener("DOMContentLoaded", () => {
   playAudio();
-  // Forzar reproducción al primer toque en cualquier parte de la pantalla si estaba bloqueado
   document.body.addEventListener("click", () => {
     if (audio.paused && !musicBtn.classList.contains("user-paused")) {
       playAudio();
@@ -353,7 +437,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }, { once: true });
 });
 
-// Registrar si el usuario explícitamente pausó para no reactivarla con clics locos
 musicBtn.addEventListener("click", () => {
   if (audio.paused) {
     musicBtn.classList.add("user-paused");
@@ -361,7 +444,6 @@ musicBtn.addEventListener("click", () => {
     musicBtn.classList.remove("user-paused");
   }
 });
-
 
 /* ══ PARTÍCULAS ══ */
 tsParticles.load("particles",{
