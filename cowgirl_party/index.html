@@ -526,7 +526,7 @@ let guests=1;
 function chg(d){
   guests=Math.max(1,Math.min(30,guests+d));
   document.getElementById("gcount").textContent=guests;
-  const msgs=["Solo tú — ¡bienvenid@! 🤠","¡Genial! Vienen 2 cowgirls 🤠","¡Trio vaquero! 🌵","¡Cuadrilla completa! 🪩","¡Viene la manada! 🐄","¡La fiesta ya está asegurada! 🎊"];
+  const msgs=["Solo tú — ¡bienvenid@! 🤠","¡Genial! Vienen 2 personas 🤠","¡Tres vaqueros! 🌵","¡Cuadrilla completa! 🪩","¡Viene la manada! 🐄","¡La fiesta ya está asegurada! 🎊"];
   document.getElementById("gmsg").textContent=msgs[Math.min(guests-1,msgs.length-1)];
 }
 chg(0);
