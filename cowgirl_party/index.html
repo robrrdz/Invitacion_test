@@ -456,21 +456,49 @@ musicBtn.addEventListener("click", () => {
 });
 
 /* ══ PARTÍCULAS ══ */
-tsParticles.load("particles",{
-  fullScreen:false,
-  background:{color:"transparent"},
-  particles:{
-    number:{value:60,density:{enable:true,area:900}},
-    color:{value:["#e8006f","#ff4da6","#b8b8c8","#fff","#ffd6eb"]},
-    shape:{type:["star","circle"]},
-    opacity:{value:{min:.2,max:.8},animation:{enable:true,speed:.6}},
-    size:{value:{min:2,max:7}},
-    move:{enable:true,speed:1,direction:"top",outModes:"out",random:true},
-    rotate:{value:{min:0,max:360},animation:{enable:true,speed:4}},
+tsParticles.load("particles", {
+  fullScreen: false,
+  background: { color: "transparent" },
+  particles: {
+    number: { value: 50, density: { enable: true, area: 900 } },
+    
+    // Paleta de colores: Rosas, plateados, blancos y un toque de vaquero rústico/glam
+    color: { value: ["#ff69b4", "#ffb6c1", "#ff1493", "#fff", "#e6c229"] },
+    
+    // AQUÍ CAMBIAMOS LAS FORMAS
+    shape: {
+      type: ["star", "char"], // Mezclamos estrellas de la librería con caracteres (emojis)
+      options: {
+        char: [
+          { value: "🤠", weight: "400" }, // Sombrero / Carita vaquera
+          { value: "👢", weight: "400" }, // Botas
+          { value: "✨", weight: "400" }, // Destellos glam
+          { value: "🌵", weight: "400" }  // Cactus de fiesta
+        ]
+      }
+    },
+    
+    opacity: { value: { min: 0.4, max: 0.9 }, animation: { enable: true, speed: 0.6 } },
+    
+    // Subimos un poquito el tamaño para que los emojis se alcancen a apreciar bien
+    size: { value: { min: 8, max: 16 } }, 
+    
+    // Caída suave como confeti de fiesta
+    move: { 
+      enable: true, 
+      speed: 1.5, 
+      direction: "bottom", // Cambiado a "bottom" para que caigan como confeti
+      outModes: "out", 
+      random: true 
+    },
+    
+    rotate: { value: { min: 0, max: 360 }, animation: { enable: true, speed: 5 } },
   },
-  interactivity:{events:{onHover:{enable:true,mode:"repulse"}},modes:{repulse:{distance:70}}},
+  interactivity: {
+    events: { onHover: { enable: true, mode: "repulse" } },
+    modes: { repulse: { distance: 70 } }
+  },
 });
-
 /* ══ CUENTA REGRESIVA ══ */
 function tick(){
   const now=new Date(), target=new Date("2026-07-18T19:00:00");
