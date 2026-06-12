@@ -30,51 +30,31 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 }
 
 /* Posicionamiento estratégico a lo largo de la invitación */
-.grafico-cow-hide-top-left {
-  top: 4%;
-  left: 10%;
-  width: 25%;
-  opacity: 0.15;
-}
-.grafico-kiss-cow {
-  top: 12%;
-  left: 18%;
-  width: 16%;
-}
 .grafico-star-plateada {
-  top: 7%;
-  left: 50%;
+  top: 8%;
+  left: 15%;
   width: 8%;
   opacity: 0.7;
 }
 .grafico-star-rosa-brillo {
-  top: 16%;
-  left: 82%;
+  top: 8%;
+  right: 15%;
   width: 13%;
+  left: auto;
 }
 .grafico-botas-rosa-lado {
-  top: 42%;
-  left: -5%;
-  width: 20%;
-  transform: translateY(-50%) rotate(-12deg);
-}
-.grafico-star-plateada-lado {
-  top: 52%;
-  right: -6%;
-  width: 11%;
-  transform: translateY(-50%) rotate(18deg);
-}
-.grafico-cactus-disco-inferior {
-  top: 83%;
-  left: -4%;
-  width: 22%;
-  transform: translateY(-50%) rotate(6deg);
+  bottom: 5%;
+  left: 2%;
+  top: auto;
+  width: 18%;
+  transform: rotate(-12deg);
 }
 .grafico-vaca-chicle-inferior {
-  top: 91%;
-  right: -5%;
-  width: 24%;
-  transform: translateY(-50%) rotate(-4deg);
+  bottom: 0%;
+  right: 2%;
+  top: auto;
+  width: 20%;
+  transform: rotate(-4deg);
 }
 
 /* ── CARD ── */
@@ -240,20 +220,13 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 
 <button id="music-control" class="music-btn paused" onclick="toggleMusic(event)">📻</button>
 
-<div class="invite">
-
-  <!--<img src="fotos/fondo1.png" class="grafico-base grafico-cow-hide-top-left" alt=""/>-->
-  <!--<img src="fotos/labios_vaca.png" class="grafico-base grafico-kiss-cow" alt=""/>-->
-  <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada" alt=""/>
-  <img src="fotos/fondo3.png" class="grafico-base grafico-star-rosa-brillo" alt=""/>
-
-  <img src="fotos/fondo4.png" class="grafico-base grafico-botas-rosa-lado" alt=""/>
-  <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada-lado" alt=""/>
-
-  <!--<img src="fotos/cactus_rosa_disco.png" class="grafico-base grafico-cactus-disco-inferior" alt=""/>-->
-  <img src="fotos/fondo1.png" class="grafico-base grafico-vaca-chicle-inferior" alt=""/>
+<div class="invite">  
   <div class="hero">
     <div class="cowhide"></div>
+     <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada" alt=""/>
+  <img src="fotos/fondo3.png" class="grafico-base grafico-star-rosa-brillo" alt=""/>
+  <img src="fotos/fondo4.png" class="grafico-base grafico-botas-rosa-lado" alt=""/>
+  <img src="fotos/fondo1.png" class="grafico-base grafico-vaca-chicle-inferior" alt=""/>
     <span class="age-balloon">40</span>
     <span class="birthday-script">Birthday</span>
     <span class="name-big">Nancy</span>
