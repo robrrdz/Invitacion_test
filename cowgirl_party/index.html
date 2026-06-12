@@ -30,6 +30,15 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 }
 
 /* Posicionamiento estratégico a lo largo de la invitación */
+  .grafico-fondo-hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2; /* detrás de .cowhide (-1) y de los gráficos (0) */
+  pointer-events: none;
+}
 .grafico-star-plateada {
   top: 8%;
   left: 15%;
@@ -222,6 +231,7 @@ body{font-family:'Nunito',sans-serif;background:#0d0008;overflow-x:hidden}
 
 <div class="invite">  
   <div class="hero">
+    <img src="fotos/fondo_invitacion.jpg" class="grafico-fondo-hero" alt=""/>
     <div class="cowhide"></div>
      <img src="fotos/fondo2.png" class="grafico-base grafico-star-plateada" alt=""/>
   <img src="fotos/fondo3.png" class="grafico-base grafico-star-rosa-brillo" alt=""/>
