@@ -1,0 +1,298 @@
+/* ============================================================
+   SOULBOUND DASHBOARD — design tokens
+   Paleta: tinta casi negra + acento "Aqua Ghyranis" (cian arcano)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:        #14151a;
+  --panel:      #1c1e25;
+  --panel-2:    #20232c;
+  --hairline:   #34373f;
+  --text:       #e9e5da;
+  --text-dim:   #9a9690;
+  --aqua:       #4fd1c5;
+  --aqua-dim:   #2a6e69;
+  --soul:       #b8463f;
+  --soul-dim:   #5c2723;
+  --gold:       #c9a45c;
+
+  --font-display: 'Spectral', serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius: 6px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--ink);
+  background-image:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(79,209,197,0.07), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(184,70,63,0.05), transparent 60%);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.45;
+  min-height: 100vh;
+}
+
+a{ color: var(--aqua); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+
+h1,h2,h3,h4{
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0 0 .4em 0;
+  letter-spacing:.01em;
+}
+
+::selection{ background: var(--aqua-dim); }
+
+:focus-visible{
+  outline: 2px solid var(--aqua);
+  outline-offset: 2px;
+}
+
+/* ---------- layout shells ---------- */
+.shell{
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+}
+
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--hairline);
+}
+.brand{
+  display:flex; align-items:baseline; gap:10px;
+}
+.brand .glyph{ color:var(--aqua); font-size:1.1em; }
+.brand h1{ font-size: 1.4rem; margin:0; }
+.brand .sub{ color:var(--text-dim); font-size:.8rem; font-family:var(--font-mono); }
+
+.topbar nav{ display:flex; gap:10px; flex-wrap:wrap; }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background: var(--panel-2);
+  border: 1px solid var(--hairline);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .15s, transform .05s;
+}
+.btn:hover{ border-color: var(--aqua); }
+.btn:active{ transform: translateY(1px); }
+.btn-primary{ background: var(--aqua-dim); border-color: var(--aqua); color:#eafffb; }
+.btn-primary:hover{ background: var(--aqua); color:#06231f; }
+.btn-danger{ border-color: var(--soul-dim); }
+.btn-danger:hover{ border-color: var(--soul); color:#ffe9e7; }
+.btn-ghost{ background:transparent; }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+.btn-sm{ padding:5px 10px; font-size:.75rem; }
+
+/* ---------- cards / panels ---------- */
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.panel + .panel{ margin-top: 16px; }
+
+.section-label{
+  display:flex; align-items:center; gap:8px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: .72rem;
+  color: var(--aqua);
+  margin-bottom: 12px;
+}
+.section-label::before{ content:'◆'; font-size:.7em; }
+.section-label::after{
+  content:''; flex:1; height:1px; background: var(--hairline);
+}
+
+/* ---------- roster grid ---------- */
+.roster-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.char-card{
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 16px;
+  display:flex; flex-direction:column; gap:10px;
+  transition: border-color .15s, transform .1s;
+}
+.char-card:hover{ border-color: var(--aqua-dim); transform: translateY(-2px); }
+.char-card .name{ font-family: var(--font-display); font-size:1.15rem; font-weight:600; }
+.char-card .meta{ color:var(--text-dim); font-size:.78rem; }
+.pillars-mini{ display:flex; gap:6px; }
+.pillars-mini span{
+  font-family: var(--font-mono); font-size:.7rem;
+  background: var(--panel-2); border:1px solid var(--hairline);
+  padding:2px 7px; border-radius:4px; color: var(--text-dim);
+}
+.char-card .row-actions{ display:flex; gap:8px; margin-top:auto; }
+
+.empty-state{
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align:center;
+  color: var(--text-dim);
+}
+
+/* ---------- soul pillars (signature element) ---------- */
+.pillars{
+  display:flex; gap:18px; align-items:flex-end;
+  padding: 6px 0 2px;
+}
+.pillar{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  width: 76px;
+}
+.pillar .gauge{
+  width: 26px; height: 96px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: var(--panel-2);
+  position: relative;
+  overflow:hidden;
+}
+.pillar .gauge .fill{
+  position:absolute; left:0; right:0; bottom:0;
+  background: linear-gradient(180deg, var(--aqua), var(--aqua-dim));
+  box-shadow: 0 0 12px rgba(79,209,197,.45);
+  transition: height .25s ease;
+}
+.pillar.soul .gauge .fill{ background: linear-gradient(180deg, var(--soul), var(--soul-dim)); box-shadow:0 0 12px rgba(184,70,63,.45); }
+.pillar .value{ font-family: var(--font-mono); font-weight:600; font-size:1.05rem; }
+.pillar .label{ font-family: var(--font-mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); }
+.pillar input[type=number]{
+  width: 44px; text-align:center; margin-top:2px;
+}
+
+/* ---------- form fields ---------- */
+label{
+  display:block; font-size:.72rem; font-family: var(--font-mono);
+  text-transform:uppercase; letter-spacing:.06em; color:var(--text-dim);
+  margin-bottom: 4px;
+}
+input, select, textarea{
+  width: 100%;
+  background: var(--panel-2);
+  border: 1px solid var(--hairline);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-family: var(--font-body);
+  font-size: .88rem;
+}
+input[type=number]{ font-family: var(--font-mono); }
+textarea{ font-family: var(--font-body); resize: vertical; min-height: 64px; }
+input:focus, select:focus, textarea:focus{ border-color: var(--aqua); }
+
+.field{ margin-bottom: 10px; }
+.grid{ display:grid; gap: 12px; }
+.grid-2{ grid-template-columns: repeat(2, 1fr); }
+.grid-3{ grid-template-columns: repeat(3, 1fr); }
+.grid-4{ grid-template-columns: repeat(4, 1fr); }
+.grid-5{ grid-template-columns: repeat(5, 1fr); }
+.grid-6{ grid-template-columns: repeat(6, 1fr); }
+@media (max-width: 720px){
+  .grid-2, .grid-3, .grid-4, .grid-5, .grid-6{ grid-template-columns: repeat(2,1fr); }
+}
+
+/* ---------- tabs ---------- */
+.tabs{ display:flex; gap:4px; flex-wrap:wrap; margin-bottom: 16px; }
+.tab-btn{
+  background: transparent; border:1px solid var(--hairline); color:var(--text-dim);
+  font-family: var(--font-mono); font-size:.74rem; text-transform:uppercase; letter-spacing:.05em;
+  padding: 7px 12px; border-radius: 5px 5px 0 0; cursor:pointer;
+  border-bottom: none;
+}
+.tab-btn.active{ color: var(--aqua); border-color: var(--aqua-dim); background: var(--panel); }
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; }
+
+/* ---------- skills table ---------- */
+.skills-table{ width:100%; border-collapse: collapse; font-size:.85rem; }
+.skills-table th{
+  text-align:left; font-family: var(--font-mono); font-size:.68rem; text-transform:uppercase;
+  color: var(--text-dim); letter-spacing:.05em; padding: 4px 8px; border-bottom:1px solid var(--hairline);
+}
+.skills-table td{ padding: 3px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align:middle; }
+.skills-table input[type=number]{ width: 52px; padding:4px 6px; }
+.dice-pool{ font-family: var(--font-mono); color: var(--gold); white-space:nowrap; }
+
+/* ---------- repeatable item rows (weapons/talents/spells...) ---------- */
+.item-row{
+  background: var(--panel-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.item-row .remove-btn{
+  position:absolute; top:8px; right:8px;
+}
+
+/* ---------- quick stat chips (DM view) ---------- */
+.stat-chip{
+  font-family: var(--font-mono); font-size: .78rem;
+  background: var(--panel-2); border:1px solid var(--hairline);
+  border-radius: 4px; padding: 4px 8px; display:inline-flex; gap:6px; align-items:center;
+}
+.stat-chip b{ color: var(--text); }
+
+table.roster-table{ width:100%; border-collapse: collapse; font-size:.85rem; }
+table.roster-table th{
+  text-align:left; font-family: var(--font-mono); font-size:.68rem; text-transform:uppercase;
+  color: var(--text-dim); padding: 8px; border-bottom: 1px solid var(--hairline);
+}
+table.roster-table td{ padding: 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+table.roster-table tr:hover td{ background: rgba(255,255,255,.02); }
+
+.toast{
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--panel-2); border:1px solid var(--aqua-dim);
+  color: var(--text); padding: 10px 16px; border-radius: var(--radius);
+  font-size:.85rem; font-family: var(--font-mono);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  opacity:0; transform: translateY(8px);
+  transition: opacity .2s, transform .2s;
+  pointer-events:none; z-index: 999;
+}
+.toast.show{ opacity:1; transform:translateY(0); }
+
+.note{ color: var(--text-dim); font-size:.78rem; }
+.badge-dm{
+  font-family: var(--font-mono); font-size:.68rem; text-transform:uppercase;
+  background: var(--soul-dim); color:#ffe9e7; border:1px solid var(--soul);
+  padding: 3px 8px; border-radius: 4px;
+}
+
+.center-modal-bg{
+  position:fixed; inset:0; background:rgba(10,10,12,.7);
+  display:flex; align-items:center; justify-content:center; z-index: 998;
+}
+.center-modal{
+  background: var(--panel); border:1px solid var(--hairline); border-radius: var(--radius);
+  padding: 24px; width: min(380px, 90vw);
+}
