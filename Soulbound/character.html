@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hoja de Personaje — Soulbound</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="brand">
+      <a href="index.html" style="color:var(--text-dim); font-family:var(--font-mono); font-size:.8rem; margin-right:6px;">← roster</a>
+      <span class="glyph">◆</span>
+      <h1 id="charNameHeader">Cargando…</h1>
+      <span id="dmBadge" class="badge-dm" style="display:none;">Modo DM</span>
+    </div>
+    <nav>
+      <span class="note" id="saveStatus"></span>
+    </nav>
+  </div>
+
+  <div id="appRoot">
+    <div class="empty-state">Cargando personaje…</div>
+  </div>
+
+</div>
+
+<script type="module">
+import {
+  getCharacter, subscribeCharacter, saveCharacter, debounce, toast,
+  SKILLS, ladderLabel, derivedMelee, derivedAccuracy, derivedDefense, dicePool
+} from "./assets/app.js";
+
+const params = new URLSearchParams(location.search);
+const charId = params.get("id");
+const isDm = params.get("dm") === "1";
+if (!charId) { location.href = "index.html"; }
+if (isDm) document.getElementById("dmBadge").style.display = "inline-block";
+
+const appRoot = document.getElementById("appRoot");
+let state = null;
+let lastLocalEdit = 0;
+let activeTab = "general";
+
+function getPath(obj, path) {
+  return path.split(".").reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+function setPath(obj, path, value) {
+  const keys = path.split(".");
+  let o = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k = keys[i];
+    if (o[k] === undefined || o[k] === null) o[k] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+    o = o[k];
+  }
+  o[keys[keys.length - 1]] = value;
+}
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+
+const debouncedSave = debounce(async () => {
+  document.getElementById("saveStatus").textContent = "Guardando…";
+  try {
+    await saveCharacter(charId, state);
+    document.getElementById("saveStatus").textContent = "Guardado ✓";
+    setTimeout(() => document.getElementById("saveStatus").textContent = "", 1500);
+  } catch (e) {
+    document.getElementById("saveStatus").textContent = "Error al guardar";
+    console.error(e);
+  }
+}, 700);
+
+function fullRender() {
+  document.getElementById("charNameHeader").textContent = state.name || "Sin nombre";
+  appRoot.innerHTML = `
+    <div class="tabs">
+      ${tabBtn("general", "General")}
+      ${tabBtn("skills", "Atributos & Skills")}
+      ${tabBtn("combat", "Combate & Equipo")}
+      ${tabBtn("talents", "Talentos")}
+      ${tabBtn("magic", "Hechizos & Milagros")}
+      ${tabBtn("companion", "Compañero")}
+      ${tabBtn("notes", "Notas & Inventario")}
+    </div>
+    <div class="tab-panel ${activeTab === "general" ? "active" : ""}" data-panel="general">${renderGeneral()}</div>
+    <div class="tab-panel ${activeTab === "skills" ? "active" : ""}" data-panel="skills">${renderSkills()}</div>
+    <div class="tab-panel ${activeTab === "combat" ? "active" : ""}" data-panel="combat">${renderCombat()}</div>
+    <div class="tab-panel ${activeTab === "talents" ? "active" : ""}" data-panel="talents">${renderTalents()}</div>
+    <div class="tab-panel ${activeTab === "magic" ? "active" : ""}" data-panel="magic">${renderMagic()}</div>
+    <div class="tab-panel ${activeTab === "companion" ? "active" : ""}" data-panel="companion">${renderCompanion()}</div>
+    <div class="tab-panel ${activeTab === "notes" ? "active" : ""}" data-panel="notes">${renderNotes()}</div>
+  `;
+  bindTabs();
+  bindInputs();
+  bindRepeaters();
+}
+
+function tabBtn(key, label) {
+  return `<button class="tab-btn ${activeTab === key ? "active" : ""}" data-tab="${key}">${label}</button>`;
+}
+function bindTabs() {
+  appRoot.querySelectorAll(".tab-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      activeTab = b.dataset.tab;
+      appRoot.querySelectorAll(".tab-btn").forEach(x => x.classList.toggle("active", x === b));
+      appRoot.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.dataset.panel === activeTab));
+    });
+  });
+}
+
+// ---------------- GENERAL ----------------
+function renderGeneral() {
+  const a = state.attributes;
+  const pct = v => Math.min(100, (Number(v) / 6) * 100) + "%";
+  return `
+    <div class="panel">
+      <div class="section-label">Identidad</div>
+      <div class="grid grid-4">
+        <div class="field"><label>Nombre</label><input data-path="name" value="${esc(state.name)}"></div>
+        <div class="field"><label>Jugador</label><input data-path="player" value="${esc(state.player)}"></div>
+        <div class="field"><label>Especie</label><input data-path="species" value="${esc(state.species)}"></div>
+        <div class="field"><label>Arquetipo</label><input data-path="archetype" value="${esc(state.archetype)}"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Esencia (Body · Mind · Soul)</div>
+      <div class="pillars">
+        ${pillar("body", "Body", a.body)}
+        ${pillar("mind", "Mind", a.mind)}
+        ${pillar("soul", "Soul", a.soul, true)}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Experiencia</div>
+      <div class="grid grid-3">
+        <div class="field"><label>XP gastada</label><input type="number" data-path="xp.spent" data-type="number" value="${state.xp.spent}"></div>
+        <div class="field"><label>XP ganada</label><input type="number" data-path="xp.earned" data-type="number" value="${state.xp.earned}"></div>
+        <div class="field"><label>XP sin gastar</label><input type="number" data-path="xp.unspent" data-type="number" value="${state.xp.unspent}"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Buffs temporales</div>
+      <textarea data-path="notes.tempBuffs">${esc(state.notes.tempBuffs)}</textarea>
+    </div>
+  `;
+}
+function pillar(key, label, value, isSoul) {
+  return `
+    <div class="pillar ${isSoul ? "soul" : ""}">
+      <div class="gauge"><div class="fill" style="height:${Math.min(100, (Number(value) / 6) * 100)}%"></div></div>
+      <div class="value">${ladderLabel(value)}</div>
+      <input type="number" min="1" max="6" data-path="attributes.${key}" data-type="number" data-gauge="${key}" value="${value}">
+      <div class="label">${label}</div>
+    </div>
+  `;
+}
+
+// ---------------- SKILLS ----------------
+function renderSkills() {
+  const rows = SKILLS.map(([key, label, attr]) => {
+    const s = state.skills[key] || { training: 0, focus: 0 };
+    const attrScore = state.attributes[attr.toLowerCase()];
+    return `
+      <tr>
+        <td>${label} <span class="note">(${attr})</span></td>
+        <td><input type="number" min="0" max="3" data-path="skills.${key}.training" data-type="number" data-dice="${key}" value="${s.training}"></td>
+        <td><input type="number" min="0" max="3" data-path="skills.${key}.focus" data-type="number" value="${s.focus}"></td>
+        <td class="dice-pool" data-dice-out="${key}">${dicePool(attrScore, s.training)}</td>
+      </tr>
+    `;
+  }).join("");
+  return `
+    <div class="panel">
+      <div class="section-label">Skills</div>
+      <table class="skills-table">
+        <thead><tr><th>Skill</th><th>Training</th><th>Focus</th><th>Pool de dados</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ---------------- COMBAT ----------------
+function renderCombat() {
+  const c = state.combat, r = state.resources, e = state.equipment;
+  return `
+    <div class="panel">
+      <div class="section-label">Valores de combate</div>
+      <p class="note">Melee/Precisión/Defensa se sugieren automáticamente desde Weapon Skill, Ballistic Skill y Reflexes. Puedes sobreescribirlos si tu mesa usa otra regla.</p>
+      <div class="grid grid-4">
+        <div class="field"><label>Melee (sugerido ${derivedMelee(state)})</label><input type="number" data-path="combat.meleeOverride" data-type="number" value="${c.meleeOverride ?? ""}" placeholder="auto"></div>
+        <div class="field"><label>Precisión (sugerido ${derivedAccuracy(state)})</label><input type="number" data-path="combat.accuracyOverride" data-type="number" value="${c.accuracyOverride ?? ""}" placeholder="auto"></div>
+        <div class="field"><label>Defensa (sugerido ${derivedDefense(state)})</label><input type="number" data-path="combat.defenseOverride" data-type="number" value="${c.defenseOverride ?? ""}" placeholder="auto"></div>
+        <div class="field"><label>Armadura</label><input type="number" data-path="combat.armourRating" data-type="number" value="${c.armourRating}"></div>
+        <div class="field"><label>Movimiento</label><input data-path="combat.move" value="${esc(c.move)}"></div>
+        <div class="field"><label>Escudo</label><input data-path="combat.shield" value="${esc(c.shield)}"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Recursos</div>
+      <div class="grid grid-4">
+        <div class="field"><label>Wounds (total)</label><input type="number" data-path="resources.woundsTotal" data-type="number" value="${r.woundsTotal}"></div>
+        <div class="field"><label>Wounds (actual)</label><input type="number" data-path="resources.woundsCurrent" data-type="number" value="${r.woundsCurrent}"></div>
+        <div class="field"><label>Mettle (total)</label><input type="number" data-path="resources.mettleTotal" data-type="number" value="${r.mettleTotal}"></div>
+        <div class="field"><label>Mettle (actual)</label><input type="number" data-path="resources.mettleCurrent" data-type="number" value="${r.mettleCurrent}"></div>
+        <div class="field"><label>Toughness</label><input type="number" data-path="resources.toughness" data-type="number" value="${r.toughness}"></div>
+        <div class="field"><label>Natural Awareness</label><input type="number" data-path="resources.naturalAwareness" data-type="number" value="${r.naturalAwareness}"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Equipo</div>
+      <div class="grid grid-3">
+        <div class="field"><label>Mano derecha</label><input data-path="equipment.rightHand" value="${esc(e.rightHand)}"></div>
+        <div class="field"><label>Mano izquierda</label><input data-path="equipment.leftHand" value="${esc(e.leftHand)}"></div>
+        <div class="field"><label>Armadura equipada</label><input data-path="equipment.armour" value="${esc(e.armour)}"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Armas</div>
+      <div data-repeater="weapons">
+        ${state.weapons.map((w, i) => weaponRow(w, i)).join("") || `<p class="note">Sin armas registradas.</p>`}
+      </div>
+      <button class="btn btn-sm" data-add="weapons">+ Añadir arma</button>
+    </div>
+  `;
+}
+function weaponRow(w, i) {
+  return `
+    <div class="item-row">
+      <button class="btn btn-sm btn-danger remove-btn" data-remove="weapons" data-index="${i}">✕</button>
+      <div class="grid grid-4">
+        <div class="field"><label>Nombre</label><input data-path="weapons.${i}.name" value="${esc(w.name)}"></div>
+        <div class="field"><label>Tipo</label><input data-path="weapons.${i}.type" value="${esc(w.type)}"></div>
+        <div class="field"><label>Pool</label><input data-path="weapons.${i}.pool" value="${esc(w.pool)}"></div>
+        <div class="field"><label>Focus</label><input data-path="weapons.${i}.focus" value="${esc(w.focus)}"></div>
+        <div class="field"><label>Daño</label><input data-path="weapons.${i}.damage" value="${esc(w.damage)}"></div>
+        <div class="field"><label>Rango</label><input data-path="weapons.${i}.range" value="${esc(w.range)}"></div>
+        <div class="field" style="grid-column: span 2;"><label>Traits</label><input data-path="weapons.${i}.traits" value="${esc(w.traits)}"></div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------------- TALENTS ----------------
+function renderTalents() {
+  return `
+    <div class="panel">
+      <div class="section-label">Talentos</div>
+      <div data-repeater="talents">
+        ${state.talents.map((t, i) => `
+          <div class="item-row">
+            <button class="btn btn-sm btn-danger remove-btn" data-remove="talents" data-index="${i}">✕</button>
+            <div class="grid grid-3">
+              <div class="field"><label>Nombre</label><input data-path="talents.${i}.name" value="${esc(t.name)}"></div>
+              <div class="field"><label>Requisitos</label><input data-path="talents.${i}.requirements" value="${esc(t.requirements)}"></div>
+              <div class="field"><label>Beneficios</label><input data-path="talents.${i}.benefits" value="${esc(t.benefits)}"></div>
+            </div>
+          </div>
+        `).join("") || `<p class="note">Sin talentos.</p>`}
+      </div>
+      <button class="btn btn-sm" data-add="talents">+ Añadir talento</button>
+    </div>
+  `;
+}
+
+// ---------------- MAGIC (spells + miracles) ----------------
+function renderMagic() {
+  return `
+    <div class="panel">
+      <div class="section-label">Hechizos</div>
+      <div data-repeater="spells">
+        ${state.spells.map((s, i) => `
+          <div class="item-row">
+            <button class="btn btn-sm btn-danger remove-btn" data-remove="spells" data-index="${i}">✕</button>
+            <div class="grid grid-4">
+              <div class="field"><label>Nombre</label><input data-path="spells.${i}.name" value="${esc(s.name)}"></div>
+              <div class="field"><label>Requisito</label><input data-path="spells.${i}.requirement" value="${esc(s.requirement)}"></div>
+              <div class="field"><label>Pool</label><input data-path="spells.${i}.pool" value="${esc(s.pool)}"></div>
+              <div class="field"><label>Focus</label><input data-path="spells.${i}.focus" value="${esc(s.focus)}"></div>
+              <div class="field"><label>DN</label><input data-path="spells.${i}.dn" value="${esc(s.dn)}"></div>
+              <div class="field"><label>Target</label><input data-path="spells.${i}.target" value="${esc(s.target)}"></div>
+              <div class="field"><label>Rango</label><input data-path="spells.${i}.range" value="${esc(s.range)}"></div>
+              <div class="field"><label>Duración</label><input data-path="spells.${i}.duration" value="${esc(s.duration)}"></div>
+            </div>
+            <div class="field"><label>Descripción</label><textarea data-path="spells.${i}.description">${esc(s.description)}</textarea></div>
+          </div>
+        `).join("") || `<p class="note">Sin hechizos (requiere talento Spellcasting).</p>`}
+      </div>
+      <button class="btn btn-sm" data-add="spells">+ Añadir hechizo</button>
+    </div>
+
+    <div class="panel">
+      <div class="section-label">Milagros</div>
+      <div data-repeater="miracles">
+        ${state.miracles.map((m, i) => `
+          <div class="item-row">
+            <button class="btn btn-sm btn-danger remove-btn" data-remove="miracles" data-index="${i}">✕</button>
+            <div class="grid grid-4">
+              <div class="field"><label>Nombre</label><input data-path="miracles.${i}.name" value="${esc(m.name)}"></div>
+              <div class="field"><label>Requisitos</label><input data-path="miracles.${i}.requirements" value="${esc(m.requirements)}"></div>
+              <div class="field"><label>Costo</label><input data-path="miracles.${i}.cost" value="${esc(m.cost)}"></div>
+              <div class="field"><label>Target</label><input data-path="miracles.${i}.target" value="${esc(m.target)}"></div>
+            </div>
+            <div class="field"><label>Descripción</label><textarea data-path="miracles.${i}.description">${esc(m.description)}</textarea></div>
+          </div>
+        `).join("") || `<p class="note">Sin milagros (requiere talento Blessed).</p>`}
+      </div>
+      <button class="btn btn-sm" data-add="miracles">+ Añadir milagro</button>
+    </div>
+  `;
+}
+
+// ---------------- COMPANION ----------------
+function renderCompanion() {
+  const c = state.companion;
+  return `
+    <div class="panel">
+      <div class="section-label">Compañero leal</div>
+      <div class="grid grid-4">
+        <div class="field"><label>Nombre</label><input data-path="companion.name" value="${esc(c.name)}"></div>
+        <div class="field"><label>Tamaño</label><input data-path="companion.size" value="${esc(c.size)}"></div>
+        <div class="field"><label>Tipo</label><input data-path="companion.type" value="${esc(c.type)}"></div>
+        <div class="field"><label>Rol</label><input data-path="companion.role" value="${esc(c.role)}"></div>
+      </div>
+      <div class="grid grid-3" style="margin-top:10px;">
+        <div class="field"><label>Body</label><input data-path="companion.attributes.body" value="${esc(c.attributes.body)}"></div>
+        <div class="field"><label>Mind</label><input data-path="companion.attributes.mind" value="${esc(c.attributes.mind)}"></div>
+        <div class="field"><label>Soul</label><input data-path="companion.attributes.soul" value="${esc(c.attributes.soul)}"></div>
+      </div>
+      <div class="grid grid-4" style="margin-top:10px;">
+        <div class="field"><label>Melee</label><input data-path="companion.combat.melee" value="${esc(c.combat.melee)}"></div>
+        <div class="field"><label>Precisión</label><input data-path="companion.combat.accuracy" value="${esc(c.combat.accuracy)}"></div>
+        <div class="field"><label>Defensa</label><input data-path="companion.combat.defense" value="${esc(c.combat.defense)}"></div>
+        <div class="field"><label>Armadura</label><input data-path="companion.combat.armour" value="${esc(c.combat.armour)}"></div>
+        <div class="field"><label>Velocidad</label><input data-path="companion.combat.speed" value="${esc(c.combat.speed)}"></div>
+        <div class="field"><label>Iniciativa</label><input data-path="companion.combat.initiative" value="${esc(c.combat.initiative)}"></div>
+        <div class="field"><label>Natural Awareness</label><input data-path="companion.combat.naturalAwareness" value="${esc(c.combat.naturalAwareness)}"></div>
+      </div>
+      <div class="grid grid-3" style="margin-top:10px;">
+        <div class="field"><label>Toughness</label><input data-path="companion.resources.toughness" value="${esc(c.resources.toughness)}"></div>
+        <div class="field"><label>Wounds</label><input data-path="companion.resources.wounds" value="${esc(c.resources.wounds)}"></div>
+        <div class="field"><label>Mettle</label><input data-path="companion.resources.mettle" value="${esc(c.resources.mettle)}"></div>
+      </div>
+      <div class="field" style="margin-top:10px;"><label>Traits</label><textarea data-path="companion.traits">${esc(c.traits)}</textarea></div>
+      <div class="field"><label>Ataques</label><textarea data-path="companion.attacks">${esc(c.attacks)}</textarea></div>
+    </div>
+  `;
+}
+
+// ---------------- NOTES / INVENTORY ----------------
+function renderNotes() {
+  const inv = state.inventory, n = state.notes;
+  return `
+    <div class="panel">
+      <div class="section-label">Inventario</div>
+      <div class="grid grid-3">
+        <div class="field"><label>Objetos personales</label><textarea data-path="inventory.personalItems">${esc(inv.personalItems)}</textarea></div>
+        <div class="field"><label>Ropa & herramientas</label><textarea data-path="inventory.clothingTools">${esc(inv.clothingTools)}</textarea></div>
+        <div class="field"><label>Consumibles</label><textarea data-path="inventory.consumables">${esc(inv.consumables)}</textarea></div>
+        <div class="field"><label>Artefactos</label><textarea data-path="inventory.artifacts">${esc(inv.artifacts)}</textarea></div>
+        <div class="field"><label>Armas cargadas</label><textarea data-path="inventory.carriedWeapons">${esc(inv.carriedWeapons)}</textarea></div>
+        <div class="field"><label>Aqua Ghyranis (drops)</label><input type="number" data-path="inventory.currency" data-type="number" value="${inv.currency}"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="section-label">Trasfondo y metas</div>
+      <div class="field"><label>Background</label><textarea data-path="notes.background">${esc(n.background)}</textarea></div>
+      <div class="grid grid-2">
+        <div class="field"><label>Metas a corto plazo</label><textarea data-path="notes.shortGoals">${esc(n.shortGoals)}</textarea></div>
+        <div class="field"><label>Metas a largo plazo</label><textarea data-path="notes.longGoals">${esc(n.longGoals)}</textarea></div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------------- input binding ----------------
+function bindInputs() {
+  appRoot.querySelectorAll("[data-path]").forEach(el => {
+    el.addEventListener("input", () => {
+      lastLocalEdit = Date.now();
+      const raw = el.value;
+      const value = el.dataset.type === "number" ? (raw === "" ? null : Number(raw)) : raw;
+      setPath(state, el.dataset.path, value);
+
+      if (el.dataset.gauge) {
+        const fillEl = el.closest(".pillar").querySelector(".fill");
+        const labelEl = el.closest(".pillar").querySelector(".value");
+        fillEl.style.height = Math.min(100, (Number(raw) / 6) * 100) + "%";
+        labelEl.textContent = ladderLabel(Number(raw));
+      }
+      if (el.dataset.dice) {
+        const key = el.dataset.dice;
+        const [, , attr] = SKILLS.find(s => s[0] === key);
+        const out = appRoot.querySelector(`[data-dice-out="${key}"]`);
+        if (out) out.textContent = dicePool(state.attributes[attr.toLowerCase()], Number(raw) || 0);
+      }
+      document.getElementById("charNameHeader").textContent = state.name || "Sin nombre";
+      debouncedSave();
+    });
+  });
+}
+function bindRepeaters() {
+  appRoot.querySelectorAll("[data-add]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const list = btn.dataset.add;
+      const blanks = {
+        weapons: { name: "", type: "", pool: "", focus: "", damage: "", range: "", traits: "" },
+        talents: { name: "", requirements: "", benefits: "" },
+        spells: { name: "", requirement: "", pool: "", focus: "", dn: "", target: "", range: "", duration: "", description: "" },
+        miracles: { name: "", requirements: "", cost: "", target: "", description: "" },
+      };
+      state[list].push(blanks[list]);
+      lastLocalEdit = Date.now();
+      fullRender();
+      debouncedSave();
+    });
+  });
+  appRoot.querySelectorAll("[data-remove]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const list = btn.dataset.remove, idx = Number(btn.dataset.index);
+      state[list].splice(idx, 1);
+      lastLocalEdit = Date.now();
+      fullRender();
+      debouncedSave();
+    });
+  });
+}
+
+// ---------------- load + realtime sync ----------------
+getCharacter(charId).then(initial => {
+  if (!initial) { appRoot.innerHTML = `<div class="empty-state">Personaje no encontrado. <a href="index.html">Volver al roster</a></div>`; return; }
+  state = initial;
+  fullRender();
+
+  subscribeCharacter(charId, remote => {
+    if (!remote) return;
+    if (Date.now() - lastLocalEdit < 1600) return; // evita pisar lo que el usuario está escribiendo
+    state = remote;
+    fullRender();
+  });
+});
+</script>
+</body>
+</html>

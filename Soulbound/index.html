@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soulbound — Roster</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="glyph">◆</span>
+      <h1>Soulbound</h1>
+      <span class="sub">campaign roster</span>
+    </div>
+    <nav>
+      <a class="btn btn-primary" id="newCharBtn" href="#">+ Nuevo personaje</a>
+      <a class="btn" href="dm.html">Vista del Dungeon Master</a>
+    </nav>
+  </div>
+
+  <div class="panel">
+    <div class="section-label">Personajes de la campaña</div>
+    <div id="roster" class="roster-grid">
+      <div class="empty-state">Cargando personajes…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- modal nuevo personaje -->
+<div class="center-modal-bg" id="modalBg" style="display:none;">
+  <div class="center-modal">
+    <h3>Nuevo personaje</h3>
+    <div class="field">
+      <label>Nombre del personaje</label>
+      <input id="newCharName" type="text" placeholder="Ej. Cora Horizon" autofocus>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn btn-ghost" id="cancelNew">Cancelar</button>
+      <button class="btn btn-primary" id="confirmNew">Crear</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { subscribeCharacters, createCharacter, deleteCharacter, toast } from "./assets/app.js";
+
+const rosterEl = document.getElementById("roster");
+
+subscribeCharacters(chars => {
+  if (!chars.length) {
+    rosterEl.innerHTML = `<div class="empty-state">Todavía no hay personajes. Crea el primero con el botón “+ Nuevo personaje”.</div>`;
+    return;
+  }
+  rosterEl.innerHTML = chars.map(c => `
+    <div class="char-card">
+      <div class="name">${escapeHtml(c.name || "Sin nombre")}</div>
+      <div class="meta">${escapeHtml(c.species || "Especie ?")} · ${escapeHtml(c.archetype || "Arquetipo ?")}</div>
+      <div class="pillars-mini">
+        <span>BODY ${c.attributes?.body ?? "-"}</span>
+        <span>MIND ${c.attributes?.mind ?? "-"}</span>
+        <span>SOUL ${c.attributes?.soul ?? "-"}</span>
+      </div>
+      <div class="row-actions">
+        <a class="btn btn-sm btn-primary" href="character.html?id=${encodeURIComponent(c.id)}">Abrir hoja</a>
+        <button class="btn btn-sm btn-danger" data-del="${c.id}">Eliminar</button>
+      </div>
+    </div>
+  `).join("");
+
+  rosterEl.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("¿Eliminar este personaje permanentemente?")) return;
+      await deleteCharacter(btn.dataset.del);
+      toast("Personaje eliminado");
+    });
+  });
+});
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// modal nuevo personaje
+const modalBg = document.getElementById("modalBg");
+document.getElementById("newCharBtn").addEventListener("click", e => {
+  e.preventDefault();
+  modalBg.style.display = "flex";
+  document.getElementById("newCharName").value = "";
+  document.getElementById("newCharName").focus();
+});
+document.getElementById("cancelNew").addEventListener("click", () => modalBg.style.display = "none");
+document.getElementById("confirmNew").addEventListener("click", async () => {
+  const name = document.getElementById("newCharName").value.trim() || "Nuevo Personaje";
+  const id = await createCharacter(name);
+  window.location.href = `character.html?id=${encodeURIComponent(id)}`;
+});
+document.getElementById("newCharName").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("confirmNew").click();
+});
+</script>
+</body>
+</html>

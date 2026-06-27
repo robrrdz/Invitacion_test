@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vista del DM — Soulbound</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="shell">
+
+  <div class="topbar">
+    <div class="brand">
+      <a href="index.html" style="color:var(--text-dim); font-family:var(--font-mono); font-size:.8rem; margin-right:6px;">← roster</a>
+      <span class="glyph">◆</span>
+      <h1>Mesa del Dungeon Master</h1>
+    </div>
+    <nav id="dmNav" style="display:none;">
+      <button class="btn btn-sm" id="changePinBtn">Cambiar PIN</button>
+    </nav>
+  </div>
+
+  <div id="gate" class="panel" style="max-width:380px; margin: 40px auto;">
+    <div class="section-label">Acceso del DM</div>
+    <p class="note">Esta vista permite editar cualquier personaje. Pon un PIN para que solo tú puedas entrar (no es seguridad real, solo evita entradas accidentales de los jugadores).</p>
+    <div class="field"><label>PIN</label><input id="pinInput" type="password" inputmode="numeric"></div>
+    <button class="btn btn-primary" id="enterBtn" style="width:100%;">Entrar</button>
+  </div>
+
+  <div id="dmRoot" style="display:none;"></div>
+
+</div>
+
+<script type="module">
+import { subscribeCharacters, getDmPin, setDmPin, saveCharacter, getCharacter, toast, debounce } from "./assets/app.js";
+
+const gate = document.getElementById("gate");
+const dmRoot = document.getElementById("dmRoot");
+const dmNav = document.getElementById("dmNav");
+
+async function tryEnter() {
+  const pin = document.getElementById("pinInput").value.trim();
+  let stored = await getDmPin();
+  if (!stored) {
+    if (!pin) { alert("Define un PIN para proteger esta vista."); return; }
+    await setDmPin(pin);
+    stored = pin;
+  }
+  if (pin !== stored) { alert("PIN incorrecto."); return; }
+  sessionStorage.setItem("dmAuthed", "1");
+  showDm();
+}
+document.getElementById("enterBtn").addEventListener("click", tryEnter);
+document.getElementById("pinInput").addEventListener("keydown", e => { if (e.key === "Enter") tryEnter(); });
+document.getElementById("changePinBtn").addEventListener("click", async () => {
+  const newPin = prompt("Nuevo PIN del DM:");
+  if (newPin) { await setDmPin(newPin); toast("PIN actualizado"); }
+});
+
+if (sessionStorage.getItem("dmAuthed") === "1") showDm();
+
+function showDm() {
+  gate.style.display = "none";
+  dmRoot.style.display = "block";
+  dmNav.style.display = "flex";
+  renderRoster();
+}
+
+function renderRoster() {
+  dmRoot.innerHTML = `<div class="panel"><div class="section-label">Personajes</div><div id="dmTableWrap">Cargando…</div></div>`;
+  const wrap = () => document.getElementById("dmTableWrap");
+
+  subscribeCharacters(chars => {
+    if (!chars.length) { wrap().innerHTML = `<div class="empty-state">No hay personajes todavía.</div>`; return; }
+    wrap().innerHTML = `
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th>Nombre</th><th>Jugador</th><th>Body/Mind/Soul</th>
+            <th>Wounds</th><th>Mettle</th><th>XP no gastada</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${chars.map(c => row(c)).join("")}
+        </tbody>
+      </table>
+    `;
+    bindQuickEdit(chars);
+  });
+}
+
+function row(c) {
+  const a = c.attributes || {};
+  const r = c.resources || {};
+  return `
+    <tr data-id="${c.id}">
+      <td><a href="character.html?id=${encodeURIComponent(c.id)}&dm=1">${esc(c.name || "Sin nombre")}</a></td>
+      <td>${esc(c.player || "—")}</td>
+      <td class="dice-pool">${a.body ?? "-"}/${a.mind ?? "-"}/${a.soul ?? "-"}</td>
+      <td>
+        <input type="number" style="width:56px;" data-id="${c.id}" data-field="resources.woundsCurrent" value="${r.woundsCurrent ?? 0}">
+        / ${r.woundsTotal ?? 0}
+      </td>
+      <td>
+        <input type="number" style="width:56px;" data-id="${c.id}" data-field="resources.mettleCurrent" value="${r.mettleCurrent ?? 0}">
+        / ${r.mettleTotal ?? 0}
+      </td>
+      <td><input type="number" style="width:64px;" data-id="${c.id}" data-field="xp.unspent" value="${c.xp?.unspent ?? 0}"></td>
+      <td><a class="btn btn-sm btn-primary" href="character.html?id=${encodeURIComponent(c.id)}&dm=1">Editar todo</a></td>
+    </tr>
+  `;
+}
+
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+function bindQuickEdit(chars) {
+  const byId = Object.fromEntries(chars.map(c => [c.id, c]));
+  document.querySelectorAll("[data-field]").forEach(input => {
+    const save = debounce(async () => {
+      const id = input.dataset.id;
+      const full = await getCharacter(id);
+      const keys = input.dataset.field.split(".");
+      let o = full;
+      for (let i = 0; i < keys.length - 1; i++) o = o[keys[i]];
+      o[keys[keys.length - 1]] = Number(input.value) || 0;
+      await saveCharacter(id, full);
+      toast(`${full.name}: actualizado`);
+    }, 500);
+    input.addEventListener("input", save);
+  });
+}
+</script>
+</body>
+</html>
