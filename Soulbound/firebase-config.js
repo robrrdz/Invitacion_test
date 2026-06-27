@@ -20,11 +20,24 @@
 //    "Tus apps" crea una app Web (</>) y copia el objeto firebaseConfig aquí abajo.
 // ============================================================
 
-export const firebaseConfig = {
-  apiKey: "PEGA_AQUI_TU_API_KEY",
-  authDomain: "PEGA_AQUI.firebaseapp.com",
-  projectId: "PEGA_AQUI",
-  storageBucket: "PEGA_AQUI.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "PEGA_AQUI"
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB_-vjzxiPiQuqvAP0V_W1gsQTc97o6zeA",
+  authDomain: "othenhein.firebaseapp.com",
+  projectId: "othenhein",
+  storageBucket: "othenhein.firebasestorage.app",
+  messagingSenderId: "452145216548",
+  appId: "1:452145216548:web:fd2206a0d23ba18dd7ecb1",
+  measurementId: "G-J6D6JB91E1"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
